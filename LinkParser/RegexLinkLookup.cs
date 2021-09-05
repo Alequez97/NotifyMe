@@ -8,11 +8,11 @@ namespace LinkLookup
 {
     public class RegexLinkLookup : ILinkLookup
     {
-        private Regex regex = new Regex(@"http://([\w+?\.\w+])+([a-zA-Z0-9\~\!\@\#\$\%\^\&amp;\*\(\)_\-\=\+\\\/\?\.\:\;\'\,]*)?", RegexOptions.IgnoreCase);
+        private Regex regex = new Regex(@"(http|https)://([\w+?\.\w+])+([a-zA-Z0-9\~\!\@\#\$\%\^\&amp;\*\(\)_\-\=\+\\\/\?\.\:\;\'\,]*)?", RegexOptions.IgnoreCase);
 
-        public List<string> GetAllLinks(string link)
+        public List<string> GetAllLinks(string text)
         {
-            return regex.Matches(link).Cast<Match>().Select(match => match.Value).ToList();
+            return regex.Matches(text).Cast<Match>().Select(match => match.Value).ToList();
         }
     }
 }

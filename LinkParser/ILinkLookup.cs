@@ -9,8 +9,8 @@ namespace LinkLookup
         /// <summary>
         /// Gets all links from passed link
         /// </summary>
-        /// <param name="link">URL address</param>
+        /// <param name="text">Text where to lookup links</param>
         /// <returns>List of links in passed link</returns>
-        public List<string> GetAllLinks(string link);
+        public List<string> GetAllLinks(string text);
     }
 }
