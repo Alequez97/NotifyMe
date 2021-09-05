@@ -37,15 +37,15 @@ namespace LinkLookupBackgroundService
             {
                 foreach (var link in _links)
                 {
-                    var html = await _httpClient.GetStringAsync(link);
-                    var allLinksInPage = _linkLookup.GetAllLinks(html);
-                    allLinksInPage.Insert(0, "\n*****************");
-                    allLinksInPage.Insert(0, DateTime.Now.ToString());
+                    var htmlResponse = await _httpClient.GetStringAsync(link);
+                    var allLinksInPage = _linkLookup.GetAllLinks(htmlResponse);
+                    allLinksInPage.Insert(0, "*****************");
+                    allLinksInPage.Insert(0, $"\n{DateTime.Now}");
 
-                    File.WriteAllLines(@"C:\Tmp\links.txt", allLinksInPage);
+                    File.AppendAllLines(@"C:\Tmp\links.txt", allLinksInPage);
                 }
 
-                await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
+                await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
             }
         }
 
