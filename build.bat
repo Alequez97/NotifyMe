@@ -1,1 +1,1 @@
-powershell.exe -ExecutionPolicy Bypass ".\ConfigFiles\DeploymentScript\LocalDeployment.ps1" -Launch $true
+powershell.exe -ExecutionPolicy Bypass -NoExit ".\ConfigFiles\DeploymentScript\LocalDeployment.ps1" -Launch $true
