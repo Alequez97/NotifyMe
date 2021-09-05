@@ -6,6 +6,9 @@ using System.Text.RegularExpressions;
 
 namespace LinkLookup
 {
+    /// <summary>
+    /// This class returns only absolute links from any kind of strings.
+    /// </summary>
     public class RegexLinkLookup : ILinkLookup
     {
         private Regex regex = new Regex(@"(http|https)://([\w+?\.\w+])+([a-zA-Z0-9\~\!\@\#\$\%\^\&amp;\*\(\)_\-\=\+\\\/\?\.\:\;\'\,]*)?", RegexOptions.IgnoreCase);

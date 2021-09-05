@@ -11,7 +11,7 @@ namespace LinkParser.UnitTests
         [SetUp]
         public void Setup()
         {
-            linkParser = new RegexLinkLookup();
+            linkParser = new HtmlAntlrLinkLookup();
         }
 
         [Test]
@@ -22,9 +22,10 @@ namespace LinkParser.UnitTests
                                 $"<body>" +
                                 $"<h2> External Paths </h2>" +
                                     $"<p> This example links to a page located in the same folder as the current page:</p>" +
-                                    $"<a href = \"http://www.w3.com\" > HTML tutorial </a>" +
-                                    $"<a href = \"https://www.google.com\" > HTML tutorial </a>" +
-                                    $"<a href = \"https://translate.yandex.ru\" > HTML tutorial </a>" +
+                                    $"<a href=\"http://www.w3.com\" > HTML tutorial </a>" +
+                                    $"<a href=\"https://www.google.com\" > HTML tutorial </a>" +
+                                    $"<a href= \"https://translate.yandex.ru\" > HTML tutorial </a>" +
+                                    $"<a href =\"/relative/path\" > HTML tutorial </a>" +
                                 $"</body>" +
                             $" </html>";
 
@@ -32,7 +33,8 @@ namespace LinkParser.UnitTests
             {
                 "http://www.w3.com",
                 "https://www.google.com",
-                "https://translate.yandex.ru"
+                "https://translate.yandex.ru",
+                "/relative/path"
             };
             
             var actualLinks = linkParser.GetAllLinks(html);

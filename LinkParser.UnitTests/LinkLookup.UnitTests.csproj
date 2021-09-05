@@ -14,7 +14,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LinkParser\LinkLookup.csproj" />
-    <ProjectReference Include="..\NotificationBackgroundService\LinkLookupBackgroundService.csproj" />
   </ItemGroup>
 
 </Project>

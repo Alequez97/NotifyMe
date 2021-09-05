@@ -14,9 +14,9 @@ namespace LinkLookupBackgroundService
     public class LinkLookupService : BackgroundService
     {
         private readonly ILinkLookup _linkLookup;
-        private IEnumerable<string> _links = new List<string>()
+        private IEnumerable<Uri> _links = new HashSet<Uri>()
         {
-            "https://habr.com/ru/flows/develop/"
+            new Uri("https://habr.com/ru/flows/develop/")
         };
         private HttpClient _httpClient;
 
@@ -38,11 +38,12 @@ namespace LinkLookupBackgroundService
                 foreach (var link in _links)
                 {
                     var htmlResponse = await _httpClient.GetStringAsync(link);
-                    var allLinksInPage = _linkLookup.GetAllLinks(htmlResponse);
-                    allLinksInPage.Insert(0, "*****************");
-                    allLinksInPage.Insert(0, $"\n{DateTime.Now}");
+                    var downloadedLinks = _linkLookup.GetAllLinks(htmlResponse);
+                    downloadedLinks.RemoveAll(downloadedLink => new Uri(downloadedLink).Host != link.Host);
+                    downloadedLinks.Insert(0, "*****************");
+                    downloadedLinks.Insert(0, $"\n{DateTime.Now}");
 
-                    File.AppendAllLines(@"C:\Tmp\links.txt", allLinksInPage);
+                    File.AppendAllLines(@"C:\Tmp\links.txt", downloadedLinks);
                 }
 
                 await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
