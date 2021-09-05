@@ -15,15 +15,18 @@ Set-Location ($Workspace)
 
 $ErrorActionPreference = "Stop"
 
-function Publish-LinkLookupService
+function Publish-Worker-Service
 {
-    $ProjectName = "LinkLookupBackgroundService"
+    param(
+        [String]$ServiceName = "LinkLookupBackgroundService",
+        [String]$ProjectName = "LinkLookupBackgroundService"
+    )
 
     $Path = "$ProjectName\$ProjectName.csproj"
     $OutputFolder = "$Workspace\Publishes\$ProjectName"
 
     Publish-Dotnet-Project $Path $OutputFolder
-    Create-Windows-Service $ProjectName "$OutputFolder\$ProjectName.exe"
+    Create-Windows-Service $ServiceName "$OutputFolder\$ProjectName.exe"
 }
 
 function Create-Windows-Service
