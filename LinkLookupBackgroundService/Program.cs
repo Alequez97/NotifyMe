@@ -20,7 +20,7 @@ namespace LinkLookupBackgroundService
                 .UseWindowsService()
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddTransient<ILinkLookup, RegexLinkLookup>();
+                    services.AddTransient<ILinkLookup, HtmlAntlrLinkLookup>();
                     services.AddHostedService<LinkLookupService>();
                 });
     }

@@ -14,7 +14,7 @@ namespace LinkLookupBackgroundService
     public class LinkLookupService : BackgroundService
     {
         private readonly ILinkLookup _linkLookup;
-        private IEnumerable<Uri> _links = new HashSet<Uri>()
+        private IEnumerable<Uri> _links = new List<Uri>()
         {
             new Uri("https://habr.com/ru/flows/develop/")
         };
@@ -39,11 +39,9 @@ namespace LinkLookupBackgroundService
                 {
                     var htmlResponse = await _httpClient.GetStringAsync(link);
                     var downloadedLinks = _linkLookup.GetAllLinks(htmlResponse);
-                    downloadedLinks.RemoveAll(downloadedLink => new Uri(downloadedLink).Host != link.Host);
-                    downloadedLinks.Insert(0, "*****************");
-                    downloadedLinks.Insert(0, $"\n{DateTime.Now}");
+                    downloadedLinks = RemoveLinksFromForeignHost(downloadedLinks, link);
 
-                    File.AppendAllLines(@"C:\Tmp\links.txt", downloadedLinks);
+                    File.AppendAllLines(@"C:\Tmp\links.txt", downloadedLinks.Select(x => x.ToString()));
                 }
 
                 await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
@@ -54,6 +52,50 @@ namespace LinkLookupBackgroundService
         {
             _httpClient.Dispose();
             return base.StopAsync(cancellationToken);
+        }
+
+        private List<string> RemoveLinksFromForeignHost(List<string> links, Uri usersUri)
+        {
+            var newLinks = new List<string>();
+            for (int i = 0; i < links.Count; i++)
+            {
+                var link = links[i];
+                if (IsAbsoluteUri(link) && GetLinksHost(link) == usersUri.Host)
+                {
+                    newLinks.Add(link);
+                }
+                
+                if (!IsAbsoluteUri(link))
+                {
+                    link = (link[0] == '/') ? link.Substring(1) : link;
+                    newLinks.Add($"{usersUri.Scheme}://{usersUri.Host}/{link}");
+                }
+            }
+
+            return newLinks;
+        }
+
+        private bool IsAbsoluteUri(string link)
+        {
+            var result = link.Contains("http");
+            return result;
+        }
+
+        private string GetLinksHost(string link)
+        {
+            if (!IsAbsoluteUri(link))
+            {
+                return string.Empty;
+            }
+            else
+            {
+                var linkWithoutSchema = link.Split("://")[1];
+                var linkParts = linkWithoutSchema.Split(".");
+                var domainName = linkParts[0];
+                var topLevelDomain = linkParts[1].Split("/")[0];
+                var result = $"{domainName}.{topLevelDomain}";
+                return result;
+            }
         }
     }
 }
