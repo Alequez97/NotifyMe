@@ -1,4 +1,5 @@
 using LinkLookup;
+using LinkLookup.Models;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
@@ -14,9 +15,9 @@ namespace LinkLookupBackgroundService
     public class LinkLookupService : BackgroundService
     {
         private readonly ILinkLookup _linkLookup;
-        private IEnumerable<Uri> _links = new List<Uri>()
+        private IEnumerable<Url> _links = new List<Url>()
         {
-            new Uri("https://habr.com/ru/flows/develop/")
+            new Url("https://habr.com/ru/flows/develop/")
         };
         private HttpClient _httpClient;
 
@@ -37,9 +38,9 @@ namespace LinkLookupBackgroundService
             {
                 foreach (var link in _links)
                 {
-                    var htmlResponse = await _httpClient.GetStringAsync(link);
+                    var htmlResponse = await _httpClient.GetStringAsync(link.ToString());
                     var downloadedLinks = _linkLookup.GetAllLinks(htmlResponse);
-                    downloadedLinks = RemoveLinksFromForeignHost(downloadedLinks, link);
+                    downloadedLinks = ModifyLinksList(downloadedLinks, link);
 
                     File.AppendAllLines(@"C:\Tmp\links.txt", downloadedLinks.Select(x => x.ToString()));
                 }
@@ -54,48 +55,33 @@ namespace LinkLookupBackgroundService
             return base.StopAsync(cancellationToken);
         }
 
-        private List<string> RemoveLinksFromForeignHost(List<string> links, Uri usersUri)
+        /// <summary>
+        /// Method that removes links from another host
+        /// and concatenates
+        /// </summary>
+        /// <param name="links"></param>
+        /// <param name="usersUrl"></param>
+        /// <returns></returns>
+        private List<string> ModifyLinksList(List<string> links, Url usersUrl)
         {
             var newLinks = new List<string>();
             for (int i = 0; i < links.Count; i++)
             {
                 var link = links[i];
-                if (IsAbsoluteUri(link) && GetLinksHost(link) == usersUri.Host)
+                var downloadedUrl = new Url(link);
+                if (downloadedUrl.IsAbsoluteUrl && downloadedUrl.Equals(usersUrl))
                 {
                     newLinks.Add(link);
                 }
                 
-                if (!IsAbsoluteUri(link))
+                if (!downloadedUrl.IsAbsoluteUrl)
                 {
-                    link = (link[0] == '/') ? link.Substring(1) : link;
-                    newLinks.Add($"{usersUri.Scheme}://{usersUri.Host}/{link}");
+                    link = (link[0] == '/') ? link[1..] : link;
+                    newLinks.Add($"{usersUrl.Scheme}://{usersUrl.Host}/{link}");
                 }
             }
 
             return newLinks;
-        }
-
-        private bool IsAbsoluteUri(string link)
-        {
-            var result = link.Contains("http");
-            return result;
-        }
-
-        private string GetLinksHost(string link)
-        {
-            if (!IsAbsoluteUri(link))
-            {
-                return string.Empty;
-            }
-            else
-            {
-                var linkWithoutSchema = link.Split("://")[1];
-                var linkParts = linkWithoutSchema.Split(".");
-                var domainName = linkParts[0];
-                var topLevelDomain = linkParts[1].Split("/")[0];
-                var result = $"{domainName}.{topLevelDomain}";
-                return result;
-            }
         }
     }
 }
