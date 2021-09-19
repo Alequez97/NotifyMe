@@ -1,5 +1,6 @@
 ﻿using Antlr4.Runtime;
 using LinkLookup.AntlrSources;
+using LinkLookup.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace LinkLookup
     /// </summary>
     public class HtmlAntlrLinkLookup : ILinkLookup
     {
-        public List<string> GetAllLinks(string htmlText)
+        public List<Url> GetAllLinks(string htmlText)
         {
             var inputStream = new AntlrInputStream(htmlText);
             var linkLexer = new LinkLookupInHtmlLexer(inputStream);

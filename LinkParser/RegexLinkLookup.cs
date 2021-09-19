@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LinkLookup.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,9 +14,9 @@ namespace LinkLookup
     {
         private Regex regex = new Regex(@"(http|https)://([\w+?\.\w+])+([a-zA-Z0-9\~\!\@\#\$\%\^\&amp;\*\(\)_\-\=\+\\\/\?\.\:\;\'\,]*)?", RegexOptions.IgnoreCase);
 
-        public List<string> GetAllLinks(string text)
+        public List<Url> GetAllLinks(string text)
         {
-            return regex.Matches(text).Cast<Match>().Select(match => match.Value).ToList();
+            return regex.Matches(text).Cast<Match>().Select(match => new Url(match.Value)).ToList();
         }
     }
 }
