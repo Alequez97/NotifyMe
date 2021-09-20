@@ -1,10 +1,10 @@
-using LinkLookup;
+using LinkLookup.Models;
 using NUnit.Framework;
 using System.Collections.Generic;
 
-namespace LinkParser.UnitTests
+namespace LinkLookup.UnitTests
 {
-    public class Tests
+    public class LinkLookupTests
     {
         private ILinkLookup linkParser;
 
@@ -29,12 +29,12 @@ namespace LinkParser.UnitTests
                                 $"</body>" +
                             $" </html>";
 
-            var expectedLinks = new List<string>()
+            var expectedLinks = new List<Url>()
             {
-                "http://www.w3.com",
-                "https://www.google.com",
-                "https://translate.yandex.ru",
-                "/relative/path"
+                new Url("http://www.w3.com"),
+                new Url("https://www.google.com"),
+                new Url("https://translate.yandex.ru"),
+                new Url("/relative/path")
             };
             
             var actualLinks = linkParser.GetAllLinks(html);
