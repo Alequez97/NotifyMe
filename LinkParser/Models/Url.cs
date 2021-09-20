@@ -42,6 +42,7 @@ namespace LinkLookup.Models
         private string GetHost()
         {
             var linkWithoutSchema = _link.Split("://")[1];
+            linkWithoutSchema = linkWithoutSchema.Replace("www.", "");
             var linkParts = linkWithoutSchema.Split(".");
             var domainName = linkParts[0];
             var topLevelDomain = linkParts[1].Split("/")[0];
