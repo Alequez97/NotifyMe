@@ -1,5 +1,6 @@
 using LinkLookup;
 using LinkLookup.Models;
+using LinkLookup.Services;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
@@ -14,21 +15,22 @@ namespace LinkLookupBackgroundService
 {
     public class LinkLookupService : BackgroundService
     {
-        private readonly ILinkLookup _linkLookup;
-        private IEnumerable<Url> _links = new List<Url>()
+        private readonly UrlService _urlService;
+        private List<Url> _links = new List<Url>()
         {
             new Url("https://habr.com/ru/flows/develop/")
         };
-        private HttpClient _httpClient;
+        private List<Url> _downloadedLinks;
 
-        public LinkLookupService(ILinkLookup linkLookup)
+        public LinkLookupService()
         {
-            _linkLookup = linkLookup;
+
         }
 
         public override Task StartAsync(CancellationToken cancellationToken)
         {
-            _httpClient = new HttpClient();
+            _downloadedLinks = new List<Url>();
+            _links.ForEach(link =>  _downloadedLinks.AddRange(_urlService.DownloadLinksAsync(link).Result));
             return base.StartAsync(cancellationToken);
         }
 
@@ -38,11 +40,13 @@ namespace LinkLookupBackgroundService
             {
                 foreach (var link in _links)
                 {
-                    var htmlResponse = await _httpClient.GetStringAsync(link.ToString());
-                    var downloadedLinks = _linkLookup.GetAllLinks(htmlResponse);
-                    downloadedLinks = ModifyLinksList(downloadedLinks, link);
+                    var downloadedLinks = _urlService.DownloadLinksAsync(link).Result;
+                    downloadedLinks = _urlService.RemoveAlienLinks(downloadedLinks, link);
+                    downloadedLinks = _urlService.ConcatenateRelativeLinksWithHost(downloadedLinks, link);
 
-                    File.AppendAllLines(@"C:\Tmp\links.txt", downloadedLinks.Select(x => x.ToString()));
+                    var listOfLinksToSend = downloadedLinks.Where(l => _downloadedLinks.Any(dl => dl.ToString() == l.ToString()) == false).ToList();
+                    // Send list of links
+                    Console.WriteLine();
                 }
 
                 await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
@@ -51,37 +55,7 @@ namespace LinkLookupBackgroundService
 
         public override Task StopAsync(CancellationToken cancellationToken)
         {
-            _httpClient.Dispose();
             return base.StopAsync(cancellationToken);
-        }
-
-        /// <summary>
-        /// Method that removes links from another host
-        /// and concatenates
-        /// </summary>
-        /// <param name="links"></param>
-        /// <param name="usersUrl"></param>
-        /// <returns></returns>
-        private List<string> ModifyLinksList(List<string> links, Url usersUrl)
-        {
-            var newLinks = new List<string>();
-            for (int i = 0; i < links.Count; i++)
-            {
-                var link = links[i];
-                var downloadedUrl = new Url(link);
-                if (downloadedUrl.IsAbsoluteUrl && downloadedUrl.Equals(usersUrl))
-                {
-                    newLinks.Add(link);
-                }
-                
-                if (!downloadedUrl.IsAbsoluteUrl)
-                {
-                    link = (link[0] == '/') ? link[1..] : link;
-                    newLinks.Add($"{usersUrl.Scheme}://{usersUrl.Host}/{link}");
-                }
-            }
-
-            return newLinks;
         }
     }
 }
