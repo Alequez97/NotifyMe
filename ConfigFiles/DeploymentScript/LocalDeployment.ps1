@@ -3,15 +3,13 @@ param([Boolean]$Launch = $false)
 if ($Launch)
 {
     Start-Process powershell.exe -Verb RunAs -ArgumentList ('-ExecutionPolicy Bypass -NoExit -Command ". {0}"' -f ($MyInvocation.MyCommand.Definition))
-    # Invoke-Expression ('cmd /c start powershell -ExecutionPolicy Bypass -NoExit -Command ". {0}"' -f ($MyInvocation.MyCommand.Definition))
     Exit
 }
 
 #Lauch PS in project's folder
 $Workspace = Split-Path -Path $MyInvocation.MyCommand.Path
-$Workspace = Split-Path -Path $Workspace
-$Workspace = Split-Path -Path $Workspace
-Set-Location ($Workspace)
+$Workspace = [System.IO.Path]::GetFullPath("$Workspace\..\..").TrimEnd("\\")
+cd $Workspace
 
 $ErrorActionPreference = "Stop"
 
@@ -75,3 +73,12 @@ function Publish-Dotnet-Project
 
     dotnet publish $ProjectPath --output $OutputFolder
 }
+
+function Write-Help
+{
+    Write "*** Local Deployment avaliable commands ***"
+    Write "publish          (Publish-Dotnet-Project)            Publishes dotnet project. Params (Path, OutputFolder)"
+}
+
+Set-Alias publish Publish-Dotnet-Project
+Write-Help
