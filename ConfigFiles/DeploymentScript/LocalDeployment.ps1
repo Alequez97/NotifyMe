@@ -13,15 +13,24 @@ cd $Workspace
 
 $ErrorActionPreference = "Stop"
 
-function Publish-Worker-Service
+function Publish-Worker-Service()
 {
     param(
         [String]$ServiceName = "LinkLookupBackgroundService",
-        [String]$ProjectName = "LinkLookupBackgroundService"
+        [String]$ProjectName = "LinkLookupBackgroundService",
+        [Switch]$Force
     )
 
     $Path = "$ProjectName\$ProjectName.csproj"
     $OutputFolder = "$Workspace\Publishes\$ProjectName"
+    if (Test-Path -Path $OutputFolder)
+    {
+        Remove-Item $OutputFolder -Recurse
+    }
+    if (($Force) -and (Get-Service $ServiceName -ErrorAction SilentlyContinue))
+    {
+        Delete-Windows-Service $ServiceName
+    }
 
     Publish-Dotnet-Project $Path $OutputFolder
     Create-Windows-Service $ServiceName "$OutputFolder\$ProjectName.exe"
