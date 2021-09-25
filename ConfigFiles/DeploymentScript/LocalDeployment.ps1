@@ -9,7 +9,7 @@ if ($Launch)
 #Lauch PS in project's folder
 $Workspace = Split-Path -Path $MyInvocation.MyCommand.Path
 $Workspace = [System.IO.Path]::GetFullPath("$Workspace\..\..").TrimEnd("\\")
-cd $Workspace
+Set-Location $Workspace
 
 $ErrorActionPreference = "Stop"
 
