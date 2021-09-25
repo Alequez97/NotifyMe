@@ -29,6 +29,8 @@ namespace LinkLookup.UnitTests
                                 $"</body>" +
                             $" </html>";
 
+            var html2 = "<a href=\"https://www.habr.com/sanja-test\">HTML tutorial</a>";
+
             var expectedLinks = new List<Url>()
             {
                 new Url("http://www.w3.com"),
@@ -39,6 +41,9 @@ namespace LinkLookup.UnitTests
             
             var actualLinks = linkParser.GetAllLinks(html);
             Assert.AreEqual(expectedLinks, actualLinks);
+
+            Assert.AreEqual(1, linkParser.GetAllLinks(html2).Count);
+            Assert.AreEqual("https://www.habr.com/sanja-test", linkParser.GetAllLinks(html2)[0].ToString());
         }
     }
 }
