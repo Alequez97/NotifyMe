@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>dotnet-LinkLookupBackgroundService-671721FA-B2C4-403E-8BE1-585B8C009B79</UserSecretsId>
+    <EnvironmentName>Local</EnvironmentName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,10 +11,14 @@
     <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="5.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Telegram.Bot" Version="16.0.2" />
-    <PackageReference Include="YamlDotNet" Version="11.2.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\LinkParser\LinkLookup.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\PublishProfiles\" />
+  </ItemGroup>
+  
 </Project>
