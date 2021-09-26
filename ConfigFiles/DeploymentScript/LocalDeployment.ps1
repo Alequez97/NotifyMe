@@ -77,10 +77,11 @@ function Publish-Dotnet-Project
 {
     param(
         [String]$ProjectPath = $(throw 'Project path parameter is mandatory'),
-        [String]$OutputFolder = $(throw 'Output folder parameter is mandatory')
+        [String]$OutputFolder = $(throw 'Output folder parameter is mandatory'),
+        [String]$Runtime = "win-x64"
     )
 
-    dotnet publish $ProjectPath --output $OutputFolder
+    dotnet publish -c Debug $ProjectPath --output $OutputFolder --runtime $Runtime --self-contained false
 }
 
 function Write-Help
