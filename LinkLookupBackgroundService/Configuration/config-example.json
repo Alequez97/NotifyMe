@@ -1,4 +1,8 @@
 {
+  "Links": [
+    "https://example.com",
+    "https://www.some-other-example.org/category"
+  ],
   "TelegramConfig": {
     "Token": "Token provided by Telegram Bot API",
     "ChatId": "Your chat id"

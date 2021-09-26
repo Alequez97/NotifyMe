@@ -19,11 +19,6 @@ namespace LinkLookupBackgroundService
     {
         private readonly IConfiguration _configuration;
         private readonly UrlService _urlService;
-        private List<Url> _links = new List<Url>()
-        {
-            new Url("https://habr.com/ru/flows/develop/"),
-            new Url("https://www.ixbt.com/")
-        };
         private List<Url> _downloadedLinks;
 
         private TelegramBotClient _telegramBot;
@@ -39,9 +34,9 @@ namespace LinkLookupBackgroundService
 
         public override Task StartAsync(CancellationToken cancellationToken)
         {
-            LoadConfigAsync();
+            LoadConfigAsync().Wait();
             _downloadedLinks = new List<Url>();
-            _links.ForEach(link => _downloadedLinks.AddRange(_urlService.DownloadLinksAsync(link).Result));
+            _notifyConfig.CastedLinks.ForEach(link => _downloadedLinks.AddRange(_urlService.DownloadLinksAsync(link).Result));
             return base.StartAsync(cancellationToken);
         }
 
@@ -49,31 +44,32 @@ namespace LinkLookupBackgroundService
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                foreach (var link in _links)
+                if (_configIsSuccessfullyInitialized)
                 {
-                    //try
-                    //{
-                    var downloadedLinks = await _urlService.DownloadLinksAsync(link);
-                    _downloadedLinks.AddRange(downloadedLinks);
-                    var filteredLinks = downloadedLinks.Where(l => !_downloadedLinks.Contains(l)).ToList();
-                    filteredLinks = _urlService.RemoveAlienLinks(filteredLinks, link);
-                    filteredLinks = _urlService.ConcatenateRelativeLinksWithHost(filteredLinks, link);
-
-                    var uniqueLinksToSend = filteredLinks.Distinct().ToList();
-
-                    if (_configIsSuccessfullyInitialized)
+                    foreach (var link in _notifyConfig.CastedLinks)
                     {
+                        //try
+                        //{
+                        var downloadedLinks = await _urlService.DownloadLinksAsync(link);
+                        _downloadedLinks.AddRange(downloadedLinks);
+                        var filteredLinks = downloadedLinks.Where(l => !_downloadedLinks.Contains(l)).ToList();
+                        filteredLinks = _urlService.RemoveAlienLinks(filteredLinks, link);
+                        filteredLinks = _urlService.ConcatenateRelativeLinksWithHost(filteredLinks, link);
+
+                        var uniqueLinksToSend = filteredLinks.Distinct().ToList();
+
+
                         uniqueLinksToSend.ForEach(async link => await _telegramBot.SendTextMessageAsync(_notifyConfig.TelegramConfig.ChatId, link.ToString()));
+                        //}
+                        //catch (Exception e)
+                        //{
+                        //    // TODO: Add logging to log exception 
+                        //}
                     }
-                    else
-                    {
-                        File.AppendAllText("C:/Tmp/log.txt", $"[{DateTime.Now}] Config is not initialized\n");
-                    }
-                    //}
-                    //catch (Exception e)
-                    //{
-                    //    // TODO: Add logging to log exception 
-                    //}
+                }
+                else
+                {
+                    File.AppendAllText("C:/Tmp/log.txt", $"[{DateTime.Now}] Config is not initialized\n");
                 }
 
                 await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
