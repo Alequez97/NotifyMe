@@ -1,0 +1,6 @@
+{
+  "TelegramConfig": {
+    "Token": "Token provided by Telegram Bot API",
+    "ChatId": "Your chat id"
+  }
+}
