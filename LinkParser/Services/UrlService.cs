@@ -9,9 +9,9 @@ namespace LinkLookup.Services
     {
         private readonly ILinkLookup _linkLookup;
 
-        public UrlService()
+        public UrlService(ILinkLookup linkLookup)
         {
-            _linkLookup = new HtmlAntlrLinkLookup();
+            _linkLookup = linkLookup;
         }
 
         public async Task<List<Url>> DownloadLinksAsync(Url url)
@@ -40,7 +40,18 @@ namespace LinkLookup.Services
                 {
                     var link = downloadedUrl.ToString();
                     link = (link[0] == '/') ? link[1..] : link;
-                    newLinks.Add(new Url($"{url.Scheme}://{url.Host}/{link}"));
+                    if (url.ToString().Contains("www"))
+                    {
+                        newLinks.Add(new Url($"{url.Scheme}://www.{url.Host}/{link}"));
+                    }
+                    else
+                    {
+                        newLinks.Add(new Url($"{url.Scheme}://{url.Host}/{link}"));
+                    }
+                }
+                if (downloadedUrl.IsAbsoluteUrl)
+                {
+                    newLinks.Add(downloadedUrl);
                 }
             }
 
@@ -60,6 +71,10 @@ namespace LinkLookup.Services
             {
                 var downloadedUrl = links[i];
                 if (downloadedUrl.IsAbsoluteUrl && downloadedUrl.Host.Equals(url.Host))
+                {
+                    newLinks.Add(downloadedUrl);
+                }
+                if (!downloadedUrl.IsAbsoluteUrl)
                 {
                     newLinks.Add(downloadedUrl);
                 }
