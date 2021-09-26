@@ -22,7 +22,7 @@ function Publish-Worker-Service()
     )
 
     $Path = "$ProjectName\$ProjectName.csproj"
-    $OutputFolder = "$Workspace\Publishes\$ProjectName"
+    $OutputFolder = "$Workspace\Publishes\$ProjectName\$ServiceName"
     if (Test-Path -Path $OutputFolder)
     {
         Remove-Item $OutputFolder -Recurse
