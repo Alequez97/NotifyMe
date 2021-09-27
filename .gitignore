@@ -366,3 +366,4 @@ FodyWeavers.xsd
 
 #Custom ignores
 Publishes/
+Logs/
