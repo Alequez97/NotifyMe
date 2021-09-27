@@ -9,6 +9,7 @@ namespace LinkLookupBackgroundService.Configuration.Models
         private List<Url> _castedLinks;
 
         public List<string> Links { get; set; }
+        public List<string> IgnoreList { get; set; }
         public TelegramConfig TelegramConfig { get; set; }
 
         public List<Url> CastedLinks 

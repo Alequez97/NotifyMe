@@ -3,6 +3,12 @@
     "https://example.com",
     "https://www.some-other-example.org/category"
   ],
+  "IgnoreList": [
+    "Links with words in this list will be ignored and won't be send",
+    "Example",
+    "Comments",
+    "www.some-site.com/post/2021/comments - won't be received"
+  ],
   "TelegramConfig": {
     "Token": "Token provided by Telegram Bot API",
     "ChatId": "Your chat id"

@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LinkLookup", "LinkParser\Li
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LinkLookup.UnitTests", "LinkParser.UnitTests\LinkLookup.UnitTests.csproj", "{AB2B400D-FC77-4793-B255-8350C093FA74}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BackgroundService", "BackgroundService", "{CA99142C-8BDF-4D7E-A1DB-3041AFA7EFAF}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LinkLookupBackgroundService", "LinkLookupBackgroundService", "{CA99142C-8BDF-4D7E-A1DB-3041AFA7EFAF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinkLookupBackgroundService", "LinkLookupBackgroundService\LinkLookupBackgroundService.csproj", "{9C460368-EA9D-4F42-85D4-41F68601EE45}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LinkLookupBackgroundService", "LinkLookupBackgroundService\LinkLookupBackgroundService.csproj", "{9C460368-EA9D-4F42-85D4-41F68601EE45}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
