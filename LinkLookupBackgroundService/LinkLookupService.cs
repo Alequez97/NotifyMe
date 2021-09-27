@@ -80,6 +80,7 @@ namespace LinkLookupBackgroundService
                             var filteredLinks = downloadedLinks.Where(l => !_downloadedLinks.Contains(l)).ToList();
                             filteredLinks = _urlService.RemoveAlienLinks(filteredLinks, link);
                             _downloadedLinks.AddRange(filteredLinks);
+                            filteredLinks = _urlService.RemoveLinksContainingSubstrings(filteredLinks, _notifyConfig.IgnoreList);
                             filteredLinks = _urlService.ConcatenateRelativeLinksWithHost(filteredLinks, link);
 
                             var uniqueLinksToSend = filteredLinks.Distinct().ToList();

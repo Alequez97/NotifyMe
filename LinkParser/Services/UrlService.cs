@@ -82,5 +82,23 @@ namespace LinkLookup.Services
 
             return newLinks;
         }
+
+        public List<Url> RemoveLinksContainingSubstrings(List<Url> links, List<string> substrings)
+        {
+            var newLinks = new List<Url>();
+            for (int i = 0; i < links.Count; i++)
+            {
+                var downloadedUrl = links[i];
+                substrings.ForEach(substring => 
+                {
+                    if (!downloadedUrl.ToString().Contains(substring))
+                    {
+                        newLinks.Add(downloadedUrl);
+                    }
+                });
+            }
+
+            return newLinks;
+        }
     }
 }
