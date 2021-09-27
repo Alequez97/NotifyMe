@@ -1,10 +1,10 @@
-using LinkLookup;
+using CommonUtils.ConfigReader;
+using CommonUtils.Logging;
 using LinkLookup.Models;
 using LinkLookup.Services;
 using LinkLookupBackgroundService.Configuration.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,6 +19,8 @@ namespace LinkLookupBackgroundService
     {
         private readonly IConfiguration _configuration;
         private readonly UrlService _urlService;
+        private readonly IConfigReader _configReader;
+        private readonly ILogger _logger;
         private List<Url> _downloadedLinks;
 
         private TelegramBotClient _telegramBot;
@@ -26,17 +28,41 @@ namespace LinkLookupBackgroundService
 
         private bool _configIsSuccessfullyInitialized;
 
-        public LinkLookupService(IConfiguration configuration, UrlService urlService)
+        /// <summary>
+        /// Constructor of LinkLookupService
+        /// </summary>
+        public LinkLookupService(
+            IConfiguration configuration,
+            UrlService urlService,
+            IConfigReader configReader,
+            ILogger logger
+        )
         {
             _configuration = configuration;
             _urlService = urlService;
+            _configReader = configReader;
+            _logger = logger;
         }
 
         public override Task StartAsync(CancellationToken cancellationToken)
         {
-            LoadConfigAsync().Wait();
+            LoadConfig();
             _downloadedLinks = new List<Url>();
-            _notifyConfig.CastedLinks.ForEach(link => _downloadedLinks.AddRange(_urlService.DownloadLinksAsync(link).Result));
+            try
+            {
+                if (_configIsSuccessfullyInitialized)
+                {
+                    _notifyConfig.CastedLinks.ForEach(link => _downloadedLinks.AddRange(_urlService.DownloadLinksAsync(link).Result));
+                }
+                else
+                {
+                    _logger.LogInfo("Config is not initialized");
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+            }
             return base.StartAsync(cancellationToken);
         }
 
@@ -48,28 +74,27 @@ namespace LinkLookupBackgroundService
                 {
                     foreach (var link in _notifyConfig.CastedLinks)
                     {
-                        //try
-                        //{
-                        var downloadedLinks = await _urlService.DownloadLinksAsync(link);
-                        _downloadedLinks.AddRange(downloadedLinks);
-                        var filteredLinks = downloadedLinks.Where(l => !_downloadedLinks.Contains(l)).ToList();
-                        filteredLinks = _urlService.RemoveAlienLinks(filteredLinks, link);
-                        filteredLinks = _urlService.ConcatenateRelativeLinksWithHost(filteredLinks, link);
+                        try
+                        {
+                            var downloadedLinks = _urlService.DownloadLinksAsync(link).Result;
+                            var filteredLinks = downloadedLinks.Where(l => !_downloadedLinks.Contains(l)).ToList();
+                            filteredLinks = _urlService.RemoveAlienLinks(filteredLinks, link);
+                            _downloadedLinks.AddRange(filteredLinks);
+                            filteredLinks = _urlService.ConcatenateRelativeLinksWithHost(filteredLinks, link);
 
-                        var uniqueLinksToSend = filteredLinks.Distinct().ToList();
+                            var uniqueLinksToSend = filteredLinks.Distinct().ToList();
 
-
-                        uniqueLinksToSend.ForEach(async link => await _telegramBot.SendTextMessageAsync(_notifyConfig.TelegramConfig.ChatId, link.ToString()));
-                        //}
-                        //catch (Exception e)
-                        //{
-                        //    // TODO: Add logging to log exception 
-                        //}
+                            uniqueLinksToSend.ForEach(async link => await _telegramBot.SendTextMessageAsync(_notifyConfig.TelegramConfig.ChatId, link.ToString()));
+                        }
+                        catch (Exception e)
+                        {
+                            _logger.LogError(e);
+                        }
                     }
                 }
                 else
                 {
-                    File.AppendAllText("C:/Tmp/log.txt", $"[{DateTime.Now}] Config is not initialized\n");
+                    _logger.LogInfo("Config is not initialized");
                 }
 
                 await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
@@ -81,27 +106,23 @@ namespace LinkLookupBackgroundService
             return base.StopAsync(cancellationToken);
         }
 
-        private Task LoadConfigAsync()
+        private void LoadConfig()
         {
-            return Task.Run(() =>
+            try
             {
-                try
-                {
-                    var workspacePath = _configuration.GetValue<string>("Workspace");
-                    File.AppendAllText("C:/Tmp/workspace.txt", $"[{DateTime.Now}] Workspace: {workspacePath}\n");
-                    var notifyConfigJson = File.ReadAllText($"{workspacePath}/LinkLookupBackgroundService/Configuration/aleksandrs.json");
-                    _notifyConfig = JsonConvert.DeserializeObject<NotifyConfig>(notifyConfigJson);
+                var workspacePath = _configuration.GetValue<string>("Workspace");
+                var configPath = $"{workspacePath}/LinkLookupBackgroundService/Configuration/aleksandrs.json";
+                _notifyConfig = _configReader.ReadConfigFile<NotifyConfig>(configPath);
 
-                    _telegramBot = new TelegramBotClient(_notifyConfig.TelegramConfig.Token);
-                    _telegramBot.SendTextMessageAsync(_notifyConfig.TelegramConfig.ChatId, "Service started...");
-                    _configIsSuccessfullyInitialized = true;
-                }
-                catch (Exception e)
-                {
-                    // TODO: Add logging to log exception 
-                    _configIsSuccessfullyInitialized = false;
-                }
-            });
+                _telegramBot = new TelegramBotClient(_notifyConfig.TelegramConfig.Token);
+                _telegramBot.SendTextMessageAsync(_notifyConfig.TelegramConfig.ChatId, "Service started...");
+                _configIsSuccessfullyInitialized = true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                _configIsSuccessfullyInitialized = false;
+            }
         }
     }
 }
