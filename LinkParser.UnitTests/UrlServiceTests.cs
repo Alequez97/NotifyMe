@@ -60,7 +60,7 @@ namespace LinkLookup.UnitTests
         }
 
         [Test]
-        public void UrlServiceRemoveBySubstringTest()
+        public void UrlServiceRemoveBySubstringTest1()
         {
             var expectedList = new List<Url>()
             {
@@ -69,6 +69,19 @@ namespace LinkLookup.UnitTests
             };
 
             var actualList = _urlService.RemoveLinksContainingSubstrings(_mockDownloadedLinks, new List<string> { "com" });
+
+            Assert.AreEqual(expectedList, actualList);
+        }
+
+        [Test]
+        public void UrlServiceRemoveBySubstringTest2()
+        {
+            var expectedList = new List<Url>()
+            {
+                new Url("https://translate.yandex.ru"),
+            };
+
+            var actualList = _urlService.RemoveLinksContainingSubstrings(_mockDownloadedLinks, new List<string> { "com", "path" });
 
             Assert.AreEqual(expectedList, actualList);
         }

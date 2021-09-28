@@ -1,5 +1,6 @@
 ﻿using LinkLookup.Models;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -85,20 +86,21 @@ namespace LinkLookup.Services
 
         public List<Url> RemoveLinksContainingSubstrings(List<Url> links, List<string> substrings)
         {
-            var newLinks = new List<Url>();
-            for (int i = 0; i < links.Count; i++)
+            for (int i = 0; i < substrings.Count; i++)
             {
-                var downloadedUrl = links[i];
-                substrings.ForEach(substring => 
+                var substring = substrings[i];
+                for (int j = 0; j < links.Count; j++)
                 {
-                    if (!downloadedUrl.ToString().Contains(substring))
+                    var link = links[j];
+                    if (link.ToString().Contains(substring))
                     {
-                        newLinks.Add(downloadedUrl);
+                        links.Remove(link);
+                        j--;
                     }
-                });
+                }
             }
 
-            return newLinks;
+            return links;
         }
     }
 }
