@@ -18,14 +18,6 @@ namespace LinkLookupBackgroundService
 
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
-            var config = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false)
-                .AddJsonFile("appsettings.Local.json", optional: true)
-                .AddJsonFile("appsettings.Development.json", optional: true)
-                .AddCommandLine(args)
-                .Build();
-
             return Host.CreateDefaultBuilder(args)
                     .UseWindowsService()
                     .ConfigureServices((hostContext, services) =>
@@ -37,6 +29,6 @@ namespace LinkLookupBackgroundService
                         services.AddHostedService<LinkLookupService>();
                     });
         }
-            
+
     }
 }
