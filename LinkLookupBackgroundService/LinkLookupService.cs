@@ -7,7 +7,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -46,23 +45,26 @@ namespace LinkLookupBackgroundService
 
         public override Task StartAsync(CancellationToken cancellationToken)
         {
-            LoadConfig();
-            _downloadedLinks = new List<Url>();
-            try
+            LoadConfigAsync().ContinueWith((task) => 
             {
-                if (_configIsSuccessfullyInitialized)
+                _downloadedLinks = new List<Url>();
+                try
                 {
-                    _notifyConfig.CastedLinks.ForEach(link => _downloadedLinks.AddRange(_urlService.DownloadLinksAsync(link).Result));
+                    if (_configIsSuccessfullyInitialized)
+                    {
+                        _notifyConfig.CastedLinks.ForEach(link => _downloadedLinks.AddRange(_urlService.DownloadLinksAsync(link).Result));
+                    }
+                    else
+                    {
+                        _logger.LogInfo("StartAsync: Config is not initialized");
+                    }
                 }
-                else
+                catch (Exception e)
                 {
-                    _logger.LogInfo("Config is not initialized");
+                    _logger.LogError(e);
                 }
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e);
-            }
+            });
+            
             return base.StartAsync(cancellationToken);
         }
 
@@ -95,7 +97,7 @@ namespace LinkLookupBackgroundService
                 }
                 else
                 {
-                    _logger.LogInfo("Config is not initialized");
+                    _logger.LogInfo("ExecuteAsync: Config is not initialized");
                 }
 
                 await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
@@ -107,23 +109,25 @@ namespace LinkLookupBackgroundService
             return base.StopAsync(cancellationToken);
         }
 
-        private void LoadConfig()
+        private Task LoadConfigAsync()
         {
-            try
-            {
-                var workspacePath = _configuration.GetValue<string>("Workspace");
-                var configPath = $"{workspacePath}/LinkLookupBackgroundService/Configuration/aleksandrs.json";
-                _notifyConfig = _configReader.ReadConfigFile<NotifyConfig>(configPath);
+            return Task.Run(() => {
+                try
+                {
+                    var workspacePath = _configuration.GetValue<string>("Workspace");
+                    var configPath = $"{workspacePath}/LinkLookupBackgroundService/Configuration/aleksandrs.json";
+                    _notifyConfig = _configReader.ReadConfigFile<NotifyConfig>(configPath);
 
-                _telegramBot = new TelegramBotClient(_notifyConfig.TelegramConfig.Token);
-                _telegramBot.SendTextMessageAsync(_notifyConfig.TelegramConfig.ChatId, "Service started...");
-                _configIsSuccessfullyInitialized = true;
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e);
-                _configIsSuccessfullyInitialized = false;
-            }
+                    _telegramBot = new TelegramBotClient(_notifyConfig.TelegramConfig.Token);
+                    _telegramBot.SendTextMessageAsync(_notifyConfig.TelegramConfig.ChatId, "Service started...");
+                    _configIsSuccessfullyInitialized = true;
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e);
+                    _configIsSuccessfullyInitialized = false;
+                }
+            });
         }
     }
 }
