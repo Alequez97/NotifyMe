@@ -34,6 +34,8 @@ namespace LinkLookupSubscriptionApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "LinkLookupSubscriptionApi", Version = "v1" });
             });
+
+            services.AddSingleton<IDataRepositoryFactory, LocalhostMongoDbDataRepositoryFactory>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
