@@ -1,11 +1,7 @@
 ﻿using LinkLookup.Models;
 using LinkLookup.Services;
 using NUnit.Framework;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LinkLookup.UnitTests
 {
@@ -26,6 +22,8 @@ namespace LinkLookup.UnitTests
         [SetUp]
         public void Setup()
         {
+            // This mock imitates call of DownloadLinksAsync
+            // In real case DowloadLinksAsync function would be called first
             _mockDownloadedLinks = new List<Url>()
             {
                 new Url("http://www.w3.com"),
@@ -52,6 +50,8 @@ namespace LinkLookup.UnitTests
             List<Url> downloadedLinks = new List<Url>();
             foreach (var link in _userSubscribedOnlinks)
             {
+                // Here would be _urlService.DownloadLinksAsync(link) in real case
+                // Mocked up for tests
                 downloadedLinks = _urlService.RemoveAlienLinks(_mockDownloadedLinks, link);
                 downloadedLinks = _urlService.ConcatenateRelativeLinksWithHost(downloadedLinks, link);
             }
