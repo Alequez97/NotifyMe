@@ -115,11 +115,16 @@ namespace LinkLookupBackgroundService
                 try
                 {
                     var workspacePath = _configuration.GetValue<string>("Workspace");
-                    var configPath = $"{workspacePath}/LinkLookupBackgroundService/Configuration/aleksandrs.json";
+                    var configPath = $"{workspacePath}/LinkLookupBackgroundService/Configuration/romanich.json";
                     _notifyConfig = _configReader.ReadConfigFile<NotifyConfig>(configPath);
 
                     _telegramBot = new TelegramBotClient(_notifyConfig.TelegramConfig.Token);
-                    _telegramBot.SendTextMessageAsync(_notifyConfig.TelegramConfig.ChatId, "Service started...");
+                    _telegramBot.SendTextMessageAsync(_notifyConfig.TelegramConfig.ChatId, "Service started...").Wait();
+                    _telegramBot.SendTextMessageAsync(_notifyConfig.TelegramConfig.ChatId, "Link you subscribed on:").Wait();
+                    _notifyConfig.CastedLinks.ForEach(link => {
+                        _telegramBot.SendTextMessageAsync(_notifyConfig.TelegramConfig.ChatId, link.ToString());
+                    });
+                    
                     _configIsSuccessfullyInitialized = true;
                 }
                 catch (Exception e)
