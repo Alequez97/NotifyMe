@@ -1,14 +1,8 @@
 ﻿using LinkLookupSubscriptionApi.Models;
-using LinkLookupSubscriptionApi.Services;
 using LinkLookupSubscriptionApi.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace LinkLookupSubscriptionApi.Controllers
 {
@@ -16,31 +10,51 @@ namespace LinkLookupSubscriptionApi.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private IDataRepository<User> _userRepository;
+        private IDataRepository<User> _dataRepository;
 
         public UsersController(IDataRepositoryFactory dataRepositoryFactory)
         {
-            _userRepository = dataRepositoryFactory.Create<User>("Users");
+            _dataRepository = dataRepositoryFactory.Get<User>("Users");
         }
 
         // GET: api/<ValuesController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public ActionResult<List<User>> Get()
         {
-            return new string[] { "value1", "value2" };
+            var users = _dataRepository.ReadAll();
+            if (users == null || users.Count == 0)
+            {
+                return new JsonResult($"Fail to find") { StatusCode = StatusCodes.Status404NotFound };
+            }
+
+            return new JsonResult(users);
         }
 
         // GET api/<ValuesController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        //[HttpGet("{id}")]
+        //public string Get(int id)
+        //{
+        //    return "value";
+        //}
+
+        [Route("/username")]
+        [HttpGet]
+        public ActionResult<User> Get([FromQuery] string username)
         {
-            return "value";
+            var user = _dataRepository.FindByExpression(x => x.Username == username);
+            if (user == null)
+            {
+                return new JsonResult($"Fail to find") { StatusCode = StatusCodes.Status404NotFound };
+            }
+
+            return new JsonResult(user);
         }
 
         // POST api/<ValuesController>
-        public ActionResult<Group> Post([FromBody] User user)
+        [HttpPost]
+        public IActionResult Post([FromBody] User user)
         {
-            var success = _userRepository.Write(user);
+            var success = _dataRepository.Write(user);
             if (success)
             {
                 return new JsonResult($"User {user.Username} successfully added") { StatusCode = StatusCodes.Status201Created };
@@ -49,19 +63,18 @@ namespace LinkLookupSubscriptionApi.Controllers
             {
                 return new JsonResult($"User {user.Username} wasn't successfully added") { StatusCode = StatusCodes.Status500InternalServerError };
             }
-
         }
 
         // PUT api/<ValuesController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+        //[HttpPut("{id}")]
+        //public void Put(int id, [FromBody] string value)
+        //{
+        //}
 
-        // DELETE api/<ValuesController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+        //// DELETE api/<ValuesController>/5
+        //[HttpDelete("{id}")]
+        //public void Delete(int id)
+        //{
+        //}
     }
 }

@@ -1,14 +1,11 @@
 ﻿using LinkLookupSubscriptionApi.Services.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace LinkLookupSubscriptionApi.Services
 {
-    public class LocalhostMongoDbDataRepositoryFactory : IDataRepositoryFactory
+    public class MongoDbDataRepositoryFactory : IDataRepositoryFactory
     {
-        public IDataRepository<T> Create<T>(string tableName = null) where T : new()
+        public IDataRepository<T> Get<T>(string tableName = null) where T : new()
         {
             if (tableName == null)
             {

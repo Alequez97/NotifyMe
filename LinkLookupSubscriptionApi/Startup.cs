@@ -1,3 +1,4 @@
+using LinkLookupSubscriptionApi.Models;
 using LinkLookupSubscriptionApi.Services;
 using LinkLookupSubscriptionApi.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -28,14 +29,13 @@ namespace LinkLookupSubscriptionApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "LinkLookupSubscriptionApi", Version = "v1" });
             });
 
-            services.AddSingleton<IDataRepositoryFactory, LocalhostMongoDbDataRepositoryFactory>();
+            services.AddSingleton<IDataRepositoryFactory, MongoDbDataRepositoryFactory>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

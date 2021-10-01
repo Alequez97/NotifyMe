@@ -3,15 +3,15 @@ using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace LinkLookupSubscriptionApi.Services
 {
     public class MongoDbDataRepository<T> : IDataRepository<T> where T : new()
     {
-        IMongoDatabase _mongoDb;
-
-        private readonly string _tableName;
+        protected readonly IMongoDatabase _mongoDb;
+        protected readonly string _tableName;
 
         /// <summary>
         /// Constructor that connects to mongoDb by connection string
@@ -31,7 +31,7 @@ namespace LinkLookupSubscriptionApi.Services
         /// <param name="databaseName"></param>
         public MongoDbDataRepository(string databaseName, string tableName)
         {
-            var client = new MongoClient(); // Connects to localhost if no connection string is provided
+            var client = new MongoClient();
             _mongoDb = client.GetDatabase(databaseName);
             _tableName = tableName;
         }
@@ -43,7 +43,17 @@ namespace LinkLookupSubscriptionApi.Services
 
         public List<T> ReadAll()
         {
-            return new List<T>();
+            try
+            {
+                var collection = _mongoDb.GetCollection<T>(_tableName);
+                var users = collection.AsQueryable().ToList();
+                return users;
+            }
+            catch (Exception e)
+            {
+                //TODO: Add logging of exceptions
+                return new List<T>();
+            }
         }
 
         public bool Write(T obj)
@@ -59,7 +69,6 @@ namespace LinkLookupSubscriptionApi.Services
                 //TODO: Add logging of exceptions
                 return false;
             }
-            
         }
 
         public bool Update(T obj)
@@ -70,6 +79,13 @@ namespace LinkLookupSubscriptionApi.Services
         public bool Delete(string id)
         {
             return true;
+        }
+
+        public T FindByExpression(Expression<Func<T, bool>> expression)
+        {
+            var collection = _mongoDb.GetCollection<T>(_tableName);
+            var obj = collection.Find(expression).FirstOrDefault();
+            return obj;
         }
     }
 }
