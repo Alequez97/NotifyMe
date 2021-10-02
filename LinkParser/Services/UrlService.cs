@@ -41,13 +41,13 @@ namespace LinkLookup.Services
                 {
                     var link = downloadedUrl.ToString();
                     link = (link[0] == '/') ? link[1..] : link;
-                    if (url.ToString().Contains("www"))
+                    if (string.IsNullOrEmpty(url.Subdomain))
                     {
-                        newLinks.Add(new Url($"{url.Scheme}://www.{url.Host}/{link}"));
+                        newLinks.Add(new Url($"{url.Scheme}://{url.Host}/{link}"));
                     }
                     else
                     {
-                        newLinks.Add(new Url($"{url.Scheme}://{url.Host}/{link}"));
+                        newLinks.Add(new Url($"{url.Scheme}://{url.Subdomain}.{url.Host}/{link}"));
                     }
                 }
                 if (downloadedUrl.IsAbsoluteUrl)

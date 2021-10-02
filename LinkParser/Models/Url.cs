@@ -39,15 +39,36 @@ namespace LinkLookup.Models
             }
         }
 
+        public string Subdomain
+        {
+            get
+            {
+                return IsAbsoluteUrl ? GetSubdomain() : string.Empty;
+            }
+        }
+
         private string GetHost()
         {
             var linkWithoutSchema = _link.Split("://")[1];
-            linkWithoutSchema = linkWithoutSchema.Replace("www.", "");
-            var linkParts = linkWithoutSchema.Split(".");
-            var domainName = linkParts[0];
-            var topLevelDomain = linkParts[1].Split("/")[0];
-            var result = $"{domainName}.{topLevelDomain}";
-            return result;
+            if (!string.IsNullOrEmpty(Subdomain))
+            {
+                linkWithoutSchema = linkWithoutSchema.Replace($"{Subdomain}.", "");
+            }
+
+            linkWithoutSchema = linkWithoutSchema.Split("?")[0];
+            linkWithoutSchema = linkWithoutSchema.Split("/")[0];
+            return linkWithoutSchema;
+        }
+
+        private string GetSubdomain()
+        {
+            var linkWithoutSchema = _link.Split("://")[1];
+            if (linkWithoutSchema.Count(@char => @char == '.') >= 2)
+            {
+                return linkWithoutSchema.Split(".")[0];
+            }
+
+            return string.Empty;
         }
 
         public override bool Equals(object obj)
