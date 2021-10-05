@@ -7,11 +7,8 @@ using System.Threading.Tasks;
 
 namespace LinkLookupSubscriptionApi.Models
 {
-    public class User
+    public class User : ModelBase
     {
-        [BsonId]
-        public Guid Id { get; set; }
-
         public string Username { get; set; }
 
         public NotifyConfig NotifyConfig { get; set; }
