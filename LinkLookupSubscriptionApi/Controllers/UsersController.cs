@@ -10,18 +10,18 @@ namespace LinkLookupSubscriptionApi.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private IDataRepository<User> _dataRepository;
+        private IDataRepository<User> _usersDataRepository;
 
         public UsersController(IDataRepositoryFactory dataRepositoryFactory)
         {
-            _dataRepository = dataRepositoryFactory.Get<User>("Users");
+            _usersDataRepository = dataRepositoryFactory.Get<User>("Users");
         }
 
         // GET: api/<ValuesController>
         [HttpGet]
         public ActionResult<List<User>> Get()
         {
-            var users = _dataRepository.ReadAll();
+            var users = _usersDataRepository.ReadAll();
             if (users == null || users.Count == 0)
             {
                 return new JsonResult($"Fail to find") { StatusCode = StatusCodes.Status404NotFound };
@@ -41,7 +41,7 @@ namespace LinkLookupSubscriptionApi.Controllers
         [HttpGet]
         public ActionResult<User> Get([FromQuery] string username)
         {
-            var user = _dataRepository.FindByExpression(x => x.Username == username);
+            var user = _usersDataRepository.FindByExpression(x => x.Username == username);
             if (user == null)
             {
                 return new JsonResult($"Fail to find") { StatusCode = StatusCodes.Status404NotFound };
@@ -54,7 +54,7 @@ namespace LinkLookupSubscriptionApi.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] User user)
         {
-            var success = _dataRepository.Write(user);
+            var success = _usersDataRepository.Write(user);
             if (success)
             {
                 return new JsonResult($"User {user.Username} successfully added") { StatusCode = StatusCodes.Status201Created };

@@ -1,4 +1,5 @@
-﻿using LinkLookupSubscriptionApi.Services.Interfaces;
+﻿using LinkLookupSubscriptionApi.Models;
+using LinkLookupSubscriptionApi.Services.Interfaces;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -8,9 +9,10 @@ using System.Threading.Tasks;
 
 namespace LinkLookupSubscriptionApi.Services
 {
-    public class MongoDbDataRepository<T> : IDataRepository<T> where T : new()
+    public class MongoDbDataRepository<T> : IDataRepository<T> where T : ModelBase, new()
     {
         protected readonly IMongoDatabase _mongoDb;
+        protected readonly IMongoCollection<T> _collection;
         protected readonly string _tableName;
 
         /// <summary>
@@ -22,6 +24,7 @@ namespace LinkLookupSubscriptionApi.Services
         {
             var client = new MongoClient(connectionString);
             _mongoDb = client.GetDatabase(databaseName);
+            _collection = _mongoDb.GetCollection<T>(tableName);
             _tableName = tableName;
         }
 
@@ -38,21 +41,29 @@ namespace LinkLookupSubscriptionApi.Services
 
         public T Read(string id)
         {
-            return new T();
+            try
+            {
+                var user = _collection.Find(x => x.Id == Guid.Parse(id)).FirstOrDefault();
+                return user;
+            }
+            catch (Exception e)
+            {
+                //TODO: Add logging of exceptions
+                return null;
+            }
         }
 
         public List<T> ReadAll()
         {
             try
             {
-                var collection = _mongoDb.GetCollection<T>(_tableName);
-                var users = collection.AsQueryable().ToList();
+                var users = _collection.AsQueryable().ToList();
                 return users;
             }
             catch (Exception e)
             {
                 //TODO: Add logging of exceptions
-                return new List<T>();
+                return null;
             }
         }
 
@@ -60,8 +71,7 @@ namespace LinkLookupSubscriptionApi.Services
         {
             try
             {
-                var collection = _mongoDb.GetCollection<T>(_tableName);
-                collection.InsertOne(obj);
+                _collection.InsertOne(obj);
                 return true;
             }
             catch (Exception e)
@@ -73,19 +83,44 @@ namespace LinkLookupSubscriptionApi.Services
 
         public bool Update(T obj)
         {
-            return true;
+            try
+            {
+                var record = _collection.FindOneAndReplace(x => x.Id == obj.Id, obj);
+                return true;
+            }
+            catch (Exception e)
+            {
+                //TODO: Add logging of exceptions
+                return false;
+            }
         }
 
         public bool Delete(string id)
         {
-            return true;
+            try
+            {
+                var record = _collection.DeleteOne(x => x.Id == Guid.Parse(id));
+                return true;
+            }
+            catch (Exception e)
+            {
+                //TODO: Add logging of exceptions
+                return false;
+            }
         }
 
         public T FindByExpression(Expression<Func<T, bool>> expression)
         {
-            var collection = _mongoDb.GetCollection<T>(_tableName);
-            var obj = collection.Find(expression).FirstOrDefault();
-            return obj;
+            try
+            {
+                var obj = _collection.Find(expression).FirstOrDefault();
+                return obj;
+            }
+            catch (Exception e)
+            {
+                //TODO: Add logging of exceptions
+                return null;
+            }
         }
     }
 }

@@ -1,11 +1,12 @@
-﻿using LinkLookupSubscriptionApi.Services.Interfaces;
+﻿using LinkLookupSubscriptionApi.Models;
+using LinkLookupSubscriptionApi.Services.Interfaces;
 using System;
 
 namespace LinkLookupSubscriptionApi.Services
 {
     public class MongoDbDataRepositoryFactory : IDataRepositoryFactory
     {
-        public IDataRepository<T> Get<T>(string tableName = null) where T : new()
+        public IDataRepository<T> Get<T>(string tableName = null) where T : ModelBase, new()
         {
             if (tableName == null)
             {
