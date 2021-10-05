@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LinkLookupSubscriptionApi.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,6 +17,6 @@ namespace LinkLookupSubscriptionApi.Services.Interfaces
         /// <typeparam name="T"></typeparam>
         /// <param name="tableName">Optional parameter if tableName is required, for example for mongoDb</param>
         /// <returns>Ready to use data access serivce object</returns>
-        IDataRepository<T> Get<T>(string tableName = null) where T : new();
+        IDataRepository<T> Get<T>(string tableName = null) where T : ModelBase, new();
     }
 }
