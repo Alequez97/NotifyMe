@@ -1,9 +1,4 @@
 ﻿using LinkLookupBackgroundService.Configuration.Models;
-using MongoDB.Bson.Serialization.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace LinkLookupSubscriptionApi.Models
 {
@@ -12,6 +7,5 @@ namespace LinkLookupSubscriptionApi.Models
         public string Username { get; set; }
 
         public NotifyConfig NotifyConfig { get; set; }
-
     }
 }

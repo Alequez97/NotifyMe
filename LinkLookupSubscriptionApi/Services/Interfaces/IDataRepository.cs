@@ -28,14 +28,14 @@ namespace LinkLookupSubscriptionApi.Services.Interfaces
         bool Write(T obj);
 
         /// <summary>
-        /// Creates existing record
+        /// Updates existing record
         /// </summary>
         /// <param name="obj"></param>
         /// <returns>true if object was updated. Otherwise false</returns>
         bool Update(T obj);
 
         /// <summary>
-        /// Delete existing record
+        /// Deletes existing record
         /// </summary>
         /// <param name="obj"></param>
         /// <returns>true if object was deleted. Otherwise false</returns>

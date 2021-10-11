@@ -1,4 +1,6 @@
-﻿using LinkLookupSubscriptionApi.Models;
+﻿using AutoMapper;
+using LinkLookupSubscriptionApi.Mappings;
+using LinkLookupSubscriptionApi.Models;
 using LinkLookupSubscriptionApi.Services.Interfaces;
 using MongoDB.Driver;
 using System;
@@ -36,6 +38,7 @@ namespace LinkLookupSubscriptionApi.Services
         {
             var client = new MongoClient();
             _mongoDb = client.GetDatabase(databaseName);
+            _collection = _mongoDb.GetCollection<T>(tableName);
             _tableName = tableName;
         }
 
@@ -84,8 +87,8 @@ namespace LinkLookupSubscriptionApi.Services
         public bool Update(T obj)
         {
             try
-            {
-                var record = _collection.FindOneAndReplace(x => x.Id == obj.Id, obj);
+            { 
+                var record = _collection.ReplaceOne(x => x.Id == obj.Id, obj);
                 return true;
             }
             catch (Exception e)

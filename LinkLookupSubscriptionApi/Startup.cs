@@ -1,19 +1,12 @@
-using LinkLookupSubscriptionApi.Models;
+using LinkLookupSubscriptionApi.Mappings;
 using LinkLookupSubscriptionApi.Services;
 using LinkLookupSubscriptionApi.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace LinkLookupSubscriptionApi
 {
@@ -36,6 +29,7 @@ namespace LinkLookupSubscriptionApi
             });
 
             services.AddSingleton<IDataRepositoryFactory, MongoDbDataRepositoryFactory>();
+            services.AddAutoMapper(typeof(MappingProfiles).Assembly);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
