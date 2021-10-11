@@ -1,4 +1,6 @@
-﻿using LinkLookupSubscriptionApi.Models;
+﻿using AutoMapper;
+using LinkLookupSubscriptionApi.Models;
+using LinkLookupSubscriptionApi.Models.DTO;
 using LinkLookupSubscriptionApi.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,70 +13,64 @@ namespace LinkLookupSubscriptionApi.Controllers
     public class UsersController : ControllerBase
     {
         private IDataRepository<User> _usersDataRepository;
+        private readonly IMapper _mapper;
 
-        public UsersController(IDataRepositoryFactory dataRepositoryFactory)
+        public UsersController(IDataRepositoryFactory dataRepositoryFactory, IMapper mapper)
         {
             _usersDataRepository = dataRepositoryFactory.Get<User>("Users");
+            _mapper = mapper;
         }
 
         // GET: api/<ValuesController>
         [HttpGet]
-        public ActionResult<List<User>> Get()
+        public ActionResult<List<UserDto>> Get()
         {
             var users = _usersDataRepository.ReadAll();
-            if (users == null || users.Count == 0)
-            {
-                return new JsonResult($"Fail to find") { StatusCode = StatusCodes.Status404NotFound };
-            }
-
-            return new JsonResult(users);
+            var usersDto = _mapper.Map<List<UserDto>>(users);
+            return usersDto != null ? Ok(usersDto) : NotFound();
         }
 
-        // GET api/<ValuesController>/5
-        //[HttpGet("{id}")]
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
+        //GET api/<ValuesController>/5
+        [HttpGet("{id}")]
+        public ActionResult<UserDto> Get(string id)
+        {
+            var user = _usersDataRepository.Read(id);
+            var userDto = _mapper.Map<UserDto>(user);
+            return userDto != null ? Ok(userDto) : NotFound();
+        }
 
-        [Route("/username")]
-        [HttpGet]
-        public ActionResult<User> Get([FromQuery] string username)
+        [HttpGet("get-by-username/{username}")]
+        public ActionResult<UserDto> GetByUsername(string username)
         {
             var user = _usersDataRepository.FindByExpression(x => x.Username == username);
-            if (user == null)
-            {
-                return new JsonResult($"Fail to find") { StatusCode = StatusCodes.Status404NotFound };
-            }
-
-            return new JsonResult(user);
+            var userDto = _mapper.Map<UserDto>(user);
+            return userDto != null ? Ok(userDto) : NotFound();
         }
 
         // POST api/<ValuesController>
         [HttpPost]
-        public IActionResult Post([FromBody] User user)
+        public IActionResult Post([FromBody] UserDto userDto)
         {
-            var success = _usersDataRepository.Write(user);
-            if (success)
-            {
-                return new JsonResult($"User {user.Username} successfully added") { StatusCode = StatusCodes.Status201Created };
-            }
-            else
-            {
-                return new JsonResult($"User {user.Username} wasn't successfully added") { StatusCode = StatusCodes.Status500InternalServerError };
-            }
+            var user = _mapper.Map<User>(userDto);
+            var isSuccess = _usersDataRepository.Write(user);
+            return isSuccess ? Ok() : new JsonResult(new Response() { Message = "Failed to save user" }) { StatusCode = StatusCodes.Status500InternalServerError };
         }
 
-        // PUT api/<ValuesController>/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
+        //PUT api/<ValuesController>
+        [HttpPut]
+        public IActionResult Put([FromBody] UserDto userDto)
+        {
+            var user = _mapper.Map<User>(userDto);
+            var isSuccess = _usersDataRepository.Update(user);
+            return isSuccess ? Ok() : new JsonResult(new Response() { Message = "Failed to update user" } ) { StatusCode = StatusCodes.Status500InternalServerError };
+        }
 
         //// DELETE api/<ValuesController>/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
+        [HttpDelete("{id}")]
+        public IActionResult Delete(string id)
+        {
+            var isSuccess = _usersDataRepository.Delete(id);
+            return isSuccess ? Ok() : new JsonResult(new Response() { Message = "Failed to delete user" } ) { StatusCode = StatusCodes.Status500InternalServerError };
+        }
     }
 }
