@@ -1,4 +1,4 @@
-﻿namespace CommonUtils.ConfigReader
+﻿namespace CommonUtils.Interfaces
 {
     public interface IConfigReader
 	{

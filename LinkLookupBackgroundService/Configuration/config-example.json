@@ -1,16 +1,17 @@
 {
   "Links": [
-    "https://example.com",
-    "https://www.some-other-example.org/category"
+    "https://habr.com/ru/flows/develop/",
+    "https://www.ixbt.com/"
   ],
   "IgnoreList": [
-    "Links with words in this list will be ignored and won't be send",
-    "Example",
-    "Comments",
-    "www.some-site.com/post/2021/comments - won't be received"
+    "comments",
+    "user",
+    "company"
   ],
-  "TelegramConfig": {
-    "Token": "Token provided by Telegram Bot API",
-    "ChatId": "Your chat id"
+  "Providers": {
+    "Telegram": {
+      "Token": "telegram bot token",
+      "ChatId": "chat id"
+    }
   }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommonUtils.Interfaces;
+using System;
 using System.IO;
 
 namespace CommonUtils.Logging

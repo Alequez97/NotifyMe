@@ -1,4 +1,4 @@
-﻿using LinkLookupBackgroundService.Configuration.Models;
+﻿using MessageSender.Models;
 
 namespace LinkLookupSubscriptionApi.Models
 {

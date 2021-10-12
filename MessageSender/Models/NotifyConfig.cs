@@ -1,8 +1,7 @@
-﻿using LinkLookup.Models;
+﻿using CommonUtils.Models;
 using System.Collections.Generic;
-using System.Xml.Serialization;
 
-namespace LinkLookupBackgroundService.Configuration.Models
+namespace MessageSender.Models
 {
     public sealed class NotifyConfig
     {
@@ -10,7 +9,7 @@ namespace LinkLookupBackgroundService.Configuration.Models
 
         public List<string> Links { get; set; }
         public List<string> IgnoreList { get; set; }
-        public TelegramConfig TelegramConfig { get; set; }
+        public ProvidersConfig Providers { get; set; }
 
         public List<Url> CastedLinks 
         {

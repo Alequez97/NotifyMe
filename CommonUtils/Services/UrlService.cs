@@ -1,10 +1,10 @@
-﻿using LinkLookup.Models;
+﻿using CommonUtils.Interfaces;
+using CommonUtils.Models;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace LinkLookup.Services
+namespace CommonUtils.Services
 {
     public class UrlService
     {

@@ -1,7 +1,7 @@
 using AutoMapper;
-using LinkLookupBackgroundService.Configuration.Models;
 using LinkLookupSubscriptionApi.Models;
 using LinkLookupSubscriptionApi.Models.DTO;
+using MessageSender.Models;
 
 namespace LinkLookupSubscriptionApi.Mappings
 {

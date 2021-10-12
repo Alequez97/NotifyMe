@@ -1,12 +1,9 @@
-using System;
-using System.Collections.Generic;
-using Antlr4;
-using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
+using CommonUtils.Models;
+using System.Collections.Generic;
 using System.Linq;
-using LinkLookup.Models;
 
-namespace LinkLookup.AntlrSources
+namespace CommonUtils.Services.AntlrSources
 {
     public sealed class LinkLookupInHtmlVisitor : LinkLookupInHtmlBaseVisitor<List<Url>>
     {

@@ -1,6 +1,6 @@
-﻿namespace LinkLookupBackgroundService.Configuration.Models
+﻿namespace MessageSender.Models
 {
-    public sealed class TelegramConfig
+    public class TelegramConfig
     {
         public string Token { get; set; }
 

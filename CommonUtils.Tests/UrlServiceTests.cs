@@ -1,9 +1,10 @@
-﻿using LinkLookup.Models;
-using LinkLookup.Services;
+﻿using CommonUtils.Interfaces;
+using CommonUtils.Models;
+using CommonUtils.Services;
 using NUnit.Framework;
 using System.Collections.Generic;
 
-namespace LinkLookup.UnitTests
+namespace CommonUtils.Tests
 {
     public class UrlServiceTests
     {

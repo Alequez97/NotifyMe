@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CommonUtils.Logging
+namespace CommonUtils.Interfaces
 {
     public interface ILogger
     {

@@ -1,13 +1,10 @@
 ﻿using Antlr4.Runtime;
-using LinkLookup.AntlrSources;
-using LinkLookup.Models;
-using System;
+using CommonUtils.Interfaces;
+using CommonUtils.Models;
+using CommonUtils.Services.AntlrSources;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace LinkLookup
+namespace CommonUtils.Services
 {
     /// <summary>
     /// Class that works only with html string. It can lookup for all links in html.

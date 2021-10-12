@@ -1,11 +1,12 @@
 using CommonUtils.ConfigReader;
+using CommonUtils.Interfaces;
 using CommonUtils.Logging;
-using LinkLookup;
-using LinkLookup.Services;
+using CommonUtils.Services;
+using MessageSender;
+using MessageSender.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.IO;
 
 namespace LinkLookupBackgroundService
 {
@@ -19,16 +20,16 @@ namespace LinkLookupBackgroundService
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
             return Host.CreateDefaultBuilder(args)
-                    .UseWindowsService()
-                    .ConfigureServices((hostContext, services) =>
-                    {
-                        services.AddTransient<UrlService>();
-                        services.AddTransient<IConfigReader, JsonConfigReader>();
-                        services.AddTransient<ILogger>(x => new TextFileLogger($"{hostContext.Configuration.GetValue<string>("Workspace")}/Logs"));
-                        services.AddTransient<ILinkLookup, HtmlAntlrLinkLookup>();
-                        services.AddHostedService<LinkLookupService>();
-                    });
+                .UseWindowsService()
+                .ConfigureServices((hostContext, services) =>
+                {
+                    services.AddTransient<UrlService>();
+                    services.AddTransient<ILinkLookup, HtmlAntlrLinkLookup>();
+                    services.AddTransient<IConfigReader, JsonConfigReader>();
+                    services.AddTransient<IMessageSenderStrategyFactory, MessageSenderStrategyFactory>();
+                    services.AddTransient<ILogger>(x => new TextFileLogger($"{hostContext.Configuration.GetValue<string>("Workspace")}/Logs"));
+                    services.AddHostedService<LinkLookupService>();
+                });
         }
-
     }
 }

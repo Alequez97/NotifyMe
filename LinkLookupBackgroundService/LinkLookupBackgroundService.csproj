@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CommonUtils\CommonUtils.csproj" />
-    <ProjectReference Include="..\LinkParser\LinkLookup.csproj" />
+    <ProjectReference Include="..\MessageSender\MessageSender.csproj" />
   </ItemGroup>
 
   <ItemGroup>

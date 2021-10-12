@@ -1,9 +1,7 @@
-﻿using LinkLookup.Models;
-using System;
+﻿using CommonUtils.Models;
 using System.Collections.Generic;
-using System.Text;
 
-namespace LinkLookup
+namespace CommonUtils.Interfaces
 {
     public interface ILinkLookup
     {

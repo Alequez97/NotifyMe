@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LinkLookupBackgroundService\LinkLookupBackgroundService.csproj" />
+    <ProjectReference Include="..\MessageSender\MessageSender.csproj" />
   </ItemGroup>
 
 </Project>
