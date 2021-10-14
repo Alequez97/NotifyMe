@@ -1,8 +1,8 @@
 ﻿namespace LinkLookupSubscriptionApi.Models.DTO
 {
-    public class UserDto
+    public class GroupDto
     {
-        public string Username { get; set; }
+        public string Name { get; set; }
 
         public NotifyConfigDto NotifyConfig { get; set; }
     }
