@@ -1,9 +1,9 @@
 using CommonUtils.Interfaces;
 using CommonUtils.Models;
 using CommonUtils.Services;
+using LinkLookupBackgroundService.Interfaces;
 using MessageSender.Interfaces;
 using MessageSender.Models;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
@@ -15,7 +15,6 @@ namespace LinkLookupBackgroundService
 {
     public class LinkLookupService : BackgroundService
     {
-        private readonly IConfiguration _configuration;
         private readonly IMessageSenderStrategy _messageSenderStrategy;
         private readonly UrlService _urlService;
         private readonly ILogger _logger;
@@ -28,18 +27,15 @@ namespace LinkLookupBackgroundService
         /// Constructor of LinkLookupService
         /// </summary>
         public LinkLookupService(
-            IConfiguration configuration,
-            IConfigReader configReader,
-            IMessageSenderStrategyFactory messageSenderStrategyFactory,
             UrlService urlService,
-            ILogger logger
+            ILogger logger,
+            IMessageSenderStrategyFactory messageSenderStrategyFactory,
+            ILinkLookupConfigReader configReader
         )
         {
-            _configuration = configuration;
             _urlService = urlService;
             _logger = logger;
-            string configPath = $"{configuration.GetValue<string>("Workspace")}/LinkLookupBackgroundService/Configuration/aleksandrs.json";
-            _notifyConfig = configReader.ReadConfigFile<NotifyConfig>(configPath);
+            _notifyConfig = configReader.GetGroupsConfiguration();
             _messageSenderStrategy = messageSenderStrategyFactory.CreateStrategy(_notifyConfig);
         }
 

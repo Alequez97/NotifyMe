@@ -1,12 +1,14 @@
-using CommonUtils.ConfigReader;
 using CommonUtils.Interfaces;
 using CommonUtils.Logging;
 using CommonUtils.Services;
+using LinkLookupBackgroundService.ConfigurationReaders;
+using LinkLookupBackgroundService.Interfaces;
 using MessageSender;
 using MessageSender.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 
 namespace LinkLookupBackgroundService
 {
@@ -25,9 +27,17 @@ namespace LinkLookupBackgroundService
                 {
                     services.AddTransient<UrlService>();
                     services.AddTransient<ILinkLookup, HtmlAntlrLinkLookup>();
-                    services.AddTransient<IConfigReader, JsonConfigReader>();
                     services.AddTransient<IMessageSenderStrategyFactory, MessageSenderStrategyFactory>();
-                    services.AddTransient<ILogger>(x => new TextFileLogger($"{hostContext.Configuration.GetValue<string>("Workspace")}/Logs"));
+                    services.AddTransient<ILogger>(x => 
+                        new TextFileLogger($"{hostContext.Configuration.GetValue<string>("Workspace")}/Logs"));
+
+                    if (args.Length < 1)
+                    {
+                        throw new InvalidOperationException("Group name command line argument is mandatory");
+                    }
+                    services.AddTransient<ILinkLookupConfigReader>(x =>
+                        new JsonLinkLookupConfigReader(x.GetRequiredService<IConfiguration>(), args[0]));
+
                     services.AddHostedService<LinkLookupService>();
                 });
         }
