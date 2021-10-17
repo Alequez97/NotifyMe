@@ -13,27 +13,39 @@ Set-Location $Workspace
 
 $ErrorActionPreference = "Stop"
 
-function Publish-Worker-Service()
+function Publish-Worker-Service
 {
     param(
-        [String]$ServiceName = "LinkLookupBackgroundService",
         [String]$ProjectName = "LinkLookupBackgroundService",
         [Switch]$Force
     )
 
     $Path = "$ProjectName\$ProjectName.csproj"
-    $OutputFolder = "$Workspace\Publishes\$ProjectName\$ServiceName"
+    $OutputFolder = "$Workspace\Publishes\$ProjectName"
     if (Test-Path -Path $OutputFolder)
     {
         Remove-Item $OutputFolder -Recurse
     }
+
+    Publish-Dotnet-Project $Path $OutputFolder
+}
+
+function Create-Link-Lookup-Windows-Service
+{
+    param(
+        [String]$ServiceName = $(throw 'Service name parameter is mandatory'),
+        [String]$GroupName = $(throw 'Group name parameter is mandatory'),
+        [String]$ProjectName = "LinkLookupBackgroundService",
+        [Switch]$Force
+    )
+
     if (($Force) -and (Get-Service $ServiceName -ErrorAction SilentlyContinue))
     {
         Delete-Windows-Service $ServiceName
     }
 
-    Publish-Dotnet-Project $Path $OutputFolder
-    Create-Windows-Service $ServiceName "$OutputFolder\$ProjectName.exe"
+    $OutputFolder = "$Workspace\Publishes\$ProjectName"
+    sc.exe create "$ServiceName" binpath="$OutputFolder\$ProjectName.exe $GroupName"
 }
 
 function Create-Windows-Service
@@ -86,8 +98,8 @@ function Publish-Dotnet-Project
 
 function Write-Help
 {
-    Write "*** Local Deployment avaliable commands ***"
-    Write "publish          (Publish-Dotnet-Project)            Publishes dotnet project. Params (Path, OutputFolder)"
+    Write-Output "*** Local Deployment avaliable commands ***"
+    Write-Output "publish          (Publish-Dotnet-Project)            Publishes dotnet project. Params (Path, OutputFolder)"
 }
 
 Set-Alias publish Publish-Dotnet-Project
