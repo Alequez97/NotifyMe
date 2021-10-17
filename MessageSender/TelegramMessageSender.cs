@@ -9,10 +9,10 @@ namespace MessageSender
 {
     public class TelegramMessageSender : IMessageSender
     {
-        private readonly Models.TelegramConfig _telegramConfig;
+        private readonly TelegramConfig _telegramConfig;
         private TelegramBotClient _telegramBot;
 
-        public TelegramMessageSender(Models.TelegramConfig telegramConfig)
+        public TelegramMessageSender(TelegramConfig telegramConfig)
         {
             _telegramConfig = telegramConfig;
             InitializeTelegraBotClient();
@@ -20,13 +20,13 @@ namespace MessageSender
 
         public TelegramMessageSender(string configFilePath, IConfigReader configReader)
         {
-            _telegramConfig = configReader.ReadConfigFile<Models.TelegramConfig>(configFilePath);
+            _telegramConfig = configReader.ReadConfigFile<TelegramConfig>(configFilePath);
             InitializeTelegraBotClient();
         }
 
         public TelegramMessageSender(string botsToken, string userId)
         {
-            _telegramConfig = new Models.TelegramConfig()
+            _telegramConfig = new TelegramConfig()
             {
                 Token = botsToken,
                 ChatId = userId
