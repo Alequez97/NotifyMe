@@ -9,8 +9,8 @@ namespace LinkLookupSubscriptionApi.Mappings
     {
         public MappingProfiles()
         {
-            CreateMap<User, UserDto>();
-            CreateMap<UserDto, User>();
+            CreateMap<Group, GroupDto>();
+            CreateMap<GroupDto, Group>();
             CreateMap<NotifyConfig, NotifyConfigDto>();
             CreateMap<NotifyConfigDto, NotifyConfig>();
         }
