@@ -40,8 +40,10 @@ namespace LinkLookupBackgroundService.ConfigurationReaders
 
         public NotifyConfig GetGroupsConfiguration()
         {
-            var group = _collection.Find(g => g.Name == _groupName).FirstOrDefault();
-            return group?.NotifyConfig ?? throw new InvalidOperationException($"Group with name {_groupName} not found");
+            var group = _collection.Find(g => g.Name == _groupName).FirstOrDefault() 
+                ?? throw new InvalidOperationException($"Group with name {_groupName} not found");
+
+            return group.NotifyConfig ?? throw new NullReferenceException($"Group {_groupName} doesn't contains configuration");
         }
     }
 }
