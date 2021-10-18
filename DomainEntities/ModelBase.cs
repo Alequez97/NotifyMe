@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using System;
 
-namespace LinkLookupSubscriptionApi.Models
+namespace DomainEntites
 {
     public class ModelBase
     {

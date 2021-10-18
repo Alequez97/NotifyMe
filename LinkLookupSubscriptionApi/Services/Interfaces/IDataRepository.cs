@@ -1,4 +1,4 @@
-﻿using LinkLookupSubscriptionApi.Models;
+﻿using DomainEntites;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;

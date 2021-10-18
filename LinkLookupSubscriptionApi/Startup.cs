@@ -1,4 +1,3 @@
-using LinkLookupSubscriptionApi.Mappings;
 using LinkLookupSubscriptionApi.Services;
 using LinkLookupSubscriptionApi.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -29,7 +28,6 @@ namespace LinkLookupSubscriptionApi
             });
 
             services.AddSingleton<IDataRepositoryFactory, MongoDbDataRepositoryFactory>();
-            services.AddAutoMapper(typeof(MappingProfiles).Assembly);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

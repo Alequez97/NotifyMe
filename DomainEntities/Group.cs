@@ -1,6 +1,6 @@
 ﻿using MessageSender.Models;
 
-namespace LinkLookupSubscriptionApi.Models
+namespace DomainEntites
 {
     public class Group : ModelBase
     {

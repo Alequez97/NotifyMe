@@ -15,11 +15,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebApi", "WebApi", "{C95D24
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LinkLookupSubscriptionApi", "LinkLookupSubscriptionApi\LinkLookupSubscriptionApi.csproj", "{C59CFB80-978E-4FBA-9709-DD5631A192DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageSender", "MessageSender\MessageSender.csproj", "{9232797E-989C-49D4-ACD3-03894E9FECBC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageSender", "MessageSender\MessageSender.csproj", "{9232797E-989C-49D4-ACD3-03894E9FECBC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonUtils.Tests", "CommonUtils.Tests\CommonUtils.Tests.csproj", "{BBBD0CCC-AFE2-4A81-82E3-0FF1CBE5CE85}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonUtils.Tests", "CommonUtils.Tests\CommonUtils.Tests.csproj", "{BBBD0CCC-AFE2-4A81-82E3-0FF1CBE5CE85}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utils.Tests", "Utils.Tests", "{637B7BBF-EEC0-4A1F-8043-4CCBB21B8AC2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BusinessLogic", "BusinessLogic", "{769D0EDF-C82D-43F4-BA77-DDD0B4EA006F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DomainEntities", "DomainEntities\DomainEntities.csproj", "{5EF97F8E-0115-409D-9D0F-290A472E9B66}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -91,6 +95,18 @@ Global
 		{BBBD0CCC-AFE2-4A81-82E3-0FF1CBE5CE85}.Release|x64.Build.0 = Release|Any CPU
 		{BBBD0CCC-AFE2-4A81-82E3-0FF1CBE5CE85}.Release|x86.ActiveCfg = Release|Any CPU
 		{BBBD0CCC-AFE2-4A81-82E3-0FF1CBE5CE85}.Release|x86.Build.0 = Release|Any CPU
+		{5EF97F8E-0115-409D-9D0F-290A472E9B66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EF97F8E-0115-409D-9D0F-290A472E9B66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EF97F8E-0115-409D-9D0F-290A472E9B66}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5EF97F8E-0115-409D-9D0F-290A472E9B66}.Debug|x64.Build.0 = Debug|Any CPU
+		{5EF97F8E-0115-409D-9D0F-290A472E9B66}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5EF97F8E-0115-409D-9D0F-290A472E9B66}.Debug|x86.Build.0 = Debug|Any CPU
+		{5EF97F8E-0115-409D-9D0F-290A472E9B66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EF97F8E-0115-409D-9D0F-290A472E9B66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EF97F8E-0115-409D-9D0F-290A472E9B66}.Release|x64.ActiveCfg = Release|Any CPU
+		{5EF97F8E-0115-409D-9D0F-290A472E9B66}.Release|x64.Build.0 = Release|Any CPU
+		{5EF97F8E-0115-409D-9D0F-290A472E9B66}.Release|x86.ActiveCfg = Release|Any CPU
+		{5EF97F8E-0115-409D-9D0F-290A472E9B66}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -101,6 +117,7 @@ Global
 		{C59CFB80-978E-4FBA-9709-DD5631A192DF} = {C95D2451-CC66-4B25-8FE3-4FD8E2DCE2FB}
 		{9232797E-989C-49D4-ACD3-03894E9FECBC} = {973166D4-C1DB-4F7D-BB24-D8A31805DA66}
 		{BBBD0CCC-AFE2-4A81-82E3-0FF1CBE5CE85} = {637B7BBF-EEC0-4A1F-8043-4CCBB21B8AC2}
+		{5EF97F8E-0115-409D-9D0F-290A472E9B66} = {769D0EDF-C82D-43F4-BA77-DDD0B4EA006F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AED5DD1A-AE39-4739-8183-69A3BC358277}

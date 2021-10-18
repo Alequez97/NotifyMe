@@ -36,7 +36,7 @@ namespace LinkLookupBackgroundService
                         throw new InvalidOperationException("Group name command line argument is mandatory");
                     }
                     services.AddTransient<ILinkLookupConfigReader>(x =>
-                        new JsonLinkLookupConfigReader(x.GetRequiredService<IConfiguration>(), args[0]));
+                        new MongoDbLinkLookupConfigReader(args[0]));
 
                     services.AddHostedService<LinkLookupService>();
                 });

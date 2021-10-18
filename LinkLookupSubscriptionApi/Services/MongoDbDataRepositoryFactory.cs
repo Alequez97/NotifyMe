@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using LinkLookupSubscriptionApi.Models;
+﻿using DomainEntites;
 using LinkLookupSubscriptionApi.Services.Interfaces;
 using System;
 
@@ -14,7 +13,7 @@ namespace LinkLookupSubscriptionApi.Services
                 throw new NullReferenceException(nameof(tableName));
             }
 
-            var databaseName = "NotifyMeDatabase"; // Will be read from configuration
+            var databaseName = "NotifyMe"; // Will be read from configuration
             var dataRepository = new MongoDbDataRepository<T>(databaseName, tableName);
             return dataRepository;
         }

@@ -1,5 +1,6 @@
 ﻿using CommonUtils.Models;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace MessageSender.Models
 {
@@ -11,6 +12,7 @@ namespace MessageSender.Models
         public List<string> IgnoreList { get; set; }
         public ProvidersConfig Providers { get; set; }
 
+        [JsonIgnore]
         public List<Url> CastedLinks 
         {
             get
