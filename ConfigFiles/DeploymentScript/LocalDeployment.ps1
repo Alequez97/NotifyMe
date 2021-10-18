@@ -16,8 +16,7 @@ $ErrorActionPreference = "Stop"
 function Publish-Worker-Service
 {
     param(
-        [String]$ProjectName = "LinkLookupBackgroundService",
-        [Switch]$Force
+        [String]$ProjectName = "LinkLookupBackgroundService"
     )
 
     $Path = "$ProjectName\$ProjectName.csproj"
@@ -33,8 +32,10 @@ function Publish-Worker-Service
 function Create-Link-Lookup-Windows-Service
 {
     param(
-        [String]$ServiceName = $(throw 'Service name parameter is mandatory'),
-        [String]$GroupName = $(throw 'Group name parameter is mandatory'),
+        [Parameter(Position=0,mandatory=$true)]
+        [String]$ServiceName,
+        [Parameter(Position=1,mandatory=$true)]
+        [String]$GroupName,
         [String]$ProjectName = "LinkLookupBackgroundService",
         [Switch]$Force
     )
@@ -51,8 +52,10 @@ function Create-Link-Lookup-Windows-Service
 function Create-Windows-Service
 {
     param(
-        [String]$ServiceName = $(throw 'Service name parameter is mandatory'),
-        [String]$BinariesPath = $(throw 'Binaries path parameter is mandatory')
+        [Parameter(Position=0,mandatory=$true)]
+        [String]$ServiceName,
+        [Parameter(Position=1,mandatory=$true)]
+        [String]$BinariesPath
     )
 
     sc.exe create "$ServiceName" binpath=$BinariesPath
@@ -61,7 +64,8 @@ function Create-Windows-Service
 function Start-Windows-Service
 {
     param(
-        [String]$ServiceName = $(throw 'Service name parameter is mandatory')
+        [Parameter(Position=0,mandatory=$true)]
+        [String]$ServiceName
     )
 
     sc.exe start "$ServiceName"
@@ -70,7 +74,8 @@ function Start-Windows-Service
 function Stop-Windows-Service
 {
     param(
-        [String]$ServiceName = $(throw 'Service name parameter is mandatory')
+        [Parameter(Position=0,mandatory=$true)]
+        [String]$ServiceName
     )
 
     sc.exe stop "$ServiceName"
@@ -79,7 +84,8 @@ function Stop-Windows-Service
 function Delete-Windows-Service
 {
     param(
-        [String]$ServiceName = $(throw 'Service name parameter is mandatory')
+        [Parameter(Position=0,mandatory=$true)]
+        [String]$ServiceName
     )
 
     sc.exe delete "$ServiceName"
@@ -88,8 +94,10 @@ function Delete-Windows-Service
 function Publish-Dotnet-Project
 {
     param(
-        [String]$ProjectPath = $(throw 'Project path parameter is mandatory'),
-        [String]$OutputFolder = $(throw 'Output folder parameter is mandatory'),
+        [Parameter(Position=0,mandatory=$true)]
+        [String]$ProjectPath,
+        [Parameter(Position=1,mandatory=$true)]
+        [String]$OutputFolder,
         [String]$Runtime = "win-x64"
     )
 
@@ -99,8 +107,20 @@ function Publish-Dotnet-Project
 function Write-Help
 {
     Write-Output "*** Local Deployment avaliable commands ***"
-    Write-Output "publish          (Publish-Dotnet-Project)            Publishes dotnet project. Params (Path, OutputFolder)"
+    Write-Output "pws              (Publish-Worker-Service)                                           "
+    Write-Output "cllws            (Create-Link-Lookup-Windows-Service) -Force deletes exising service"
+    Write-Output "create-ws        (Create-Windows-Service)                                           "
+    Write-Output "start-ws         (Start-Windows-Service)                                            "
+    Write-Output "stop-ws          (Stop-Windows-Service)                                             "
+    Write-Output "delete-ws        (Delete-Windows-Service)                                           "
+    Write-Output "publish          (Publish-Dotnet-Project)                                           "
 }
 
+Set-Alias pws Publish-Worker-Service
+Set-Alias cllws Create-Link-Lookup-Windows-Service
+Set-Alias create-ws Create-Windows-Service
+Set-Alias start-ws Start-Windows-Service
+Set-Alias stop-ws Stop-Windows-Service
+Set-Alias delete-ws Delete-Windows-Service
 Set-Alias publish Publish-Dotnet-Project
 Write-Help
