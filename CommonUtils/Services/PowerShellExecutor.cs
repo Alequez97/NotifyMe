@@ -27,14 +27,22 @@ namespace CommonUtils.Services
                 process.Start();
                 process.WaitForExit();
 
+                if (process.ExitCode > 0)
+                {
+                    response.ResponseStatus = PowerShellResponseStatus.Error;
+                }    
+                else
+                {
+                    response.ResponseStatus = PowerShellResponseStatus.Success;
+                }
+
                 response.StandartOutput = process.StandardOutput.ReadToEnd();
-                response.ResponseStatus = PowerShellResponseStatus.Success;
                 return response;
             }
             catch (Exception e)
             {
                 response.Exception = e;
-                response.ResponseStatus = PowerShellResponseStatus.Error;
+                response.ResponseStatus = PowerShellResponseStatus.Exception;
                 return response;
             }
         }

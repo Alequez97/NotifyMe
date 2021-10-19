@@ -3,6 +3,7 @@
     public enum PowerShellResponseStatus
     {
         Success = 0,
-        Error = 1
+        Error = 1,
+        Exception = 2
     }
 }
