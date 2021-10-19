@@ -7,9 +7,9 @@ namespace CommonUtils.Services
 {
     public class PowerShellExecutor
     {
-        public PowerShellResponse Invoke(string command)
+        public CommandLineResponse Invoke(string command)
         {
-            var response = new PowerShellResponse();
+            var response = new CommandLineResponse();
             try
             {
                 var psCommandBytes = Encoding.Unicode.GetBytes(command);
@@ -29,11 +29,11 @@ namespace CommonUtils.Services
 
                 if (process.ExitCode > 0)
                 {
-                    response.ResponseStatus = PowerShellResponseStatus.Error;
+                    response.ResponseStatus = CommandLineResponseStatus.Error;
                 }    
                 else
                 {
-                    response.ResponseStatus = PowerShellResponseStatus.Success;
+                    response.ResponseStatus = CommandLineResponseStatus.Success;
                 }
 
                 response.StandartOutput = process.StandardOutput.ReadToEnd();
@@ -42,7 +42,7 @@ namespace CommonUtils.Services
             catch (Exception e)
             {
                 response.Exception = e;
-                response.ResponseStatus = PowerShellResponseStatus.Exception;
+                response.ResponseStatus = CommandLineResponseStatus.Exception;
                 return response;
             }
         }

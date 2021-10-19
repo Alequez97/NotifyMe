@@ -1,6 +1,6 @@
 ﻿namespace CommonUtils.Models
 {
-    public enum PowerShellResponseStatus
+    public enum CommandLineResponseStatus
     {
         Success = 0,
         Error = 1,
