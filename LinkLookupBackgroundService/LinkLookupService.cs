@@ -43,7 +43,14 @@ namespace LinkLookupBackgroundService
         {
             _downloadedLinks = new List<Url>();
             InitialLinksDownloadAsync();
-            _messageSenderStrategy.SendMessageForAll("Service started...");
+            try
+            {
+                _messageSenderStrategy.SendMessageForAll("Service started...");
+            }
+            catch (Exception e)
+            {
+                //TODO Add exception logging
+            }
 
             return base.StartAsync(cancellationToken);
         }
@@ -82,16 +89,30 @@ namespace LinkLookupBackgroundService
 
         public override Task StopAsync(CancellationToken cancellationToken)
         {
-            _messageSenderStrategy.SendMessageForAll("Service stoped...");
+            try
+            {
+                _messageSenderStrategy.SendMessageForAll("Service stoped...");
+            }
+            catch (Exception e)
+            {
+                //TODO Add exception logging
+            }
 
             return base.StopAsync(cancellationToken);
         }
 
         private Task InitialLinksDownloadAsync()
         {
-            return Task.Run(() => { 
-                _notifyConfig.CastedLinks.ForEach(link => _downloadedLinks.AddRange(_urlService.DownloadLinksAsync(link).Result));
-                _initialLinksDownloadWasDone = true;
+            return Task.Run(() => {
+                try
+                {
+                    _notifyConfig.CastedLinks.ForEach(link => _downloadedLinks.AddRange(_urlService.DownloadLinksAsync(link).Result));
+                    _initialLinksDownloadWasDone = true;
+                }
+                catch (Exception e)
+                {
+                    //TODO Add exception logging
+                }
             });
         }
     }
