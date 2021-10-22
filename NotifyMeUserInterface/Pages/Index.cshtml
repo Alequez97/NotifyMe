@@ -1,10 +1,89 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Notify me home page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+    @{
+        if (Model.Groups == null || Model.Groups.Count == 0)
+        {
+            <h1 class="display-6">Your don't have groups yet!</h1>
+        }
+        else
+        {
+            <h1 class="display-6">Your groups:</h1>
+
+            <div class="accordion" id="accordionExample">
+                @{
+                    int index = 0;
+                    foreach (var group in Model.Groups)
+                    {
+                        index++;
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading-@index">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@index" aria-expanded="true" aria-controls="collapse-@index">
+                                    @group.Name
+                                </button>
+                            </h2>
+                            <div id="collapse-@index" class="accordion-collapse collapse" aria-labelledby="heading-@index" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <div class="status-and-actions">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Status</th>
+                                                    <th scope="col">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="table-success">
+                                                    <td>Running</td>
+                                                    <td>
+                                                        <button type="button" class="btn btn-info">Stop</button>
+                                                        <button type="button" class="btn btn-warning">Restart</button>
+                                                        <button type="button" class="btn btn-danger">Delete</button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        @*<table class="table-danger">...</table>*@
+                                    </div>
+                                    <div class="configuration-wrapper">
+                                        <h4>Configuration:</h4>
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Provider</th>
+                                                    <th scope="col">Enabled</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="table-success">
+                                                    <td>Telegram</td>
+                                                    <td>
+                                                        <input class="form-check-input position-static" type="checkbox" aria-label="" checked>
+                                                    </td>
+                                                </tr>
+                                                <tr class="table-danger">
+                                                    <td>WhatsApp</td>
+                                                    <td>
+                                                        <input class="form-check-input position-static" type="checkbox" aria-label="">
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <button type="button" class="btn btn-outline-dark">Edit configuration</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        }
+    }
+
+    <a href="/Groups/Add" class="btn btn-primary btn-lg active mt-4" role="button" aria-pressed="true">Add group</a>
 </div>
