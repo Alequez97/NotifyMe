@@ -1,8 +1,9 @@
 ﻿using CommonUtils.Models;
+using CommonUtils.Services.Interfaces;
 
 namespace CommonUtils.Services
 {
-    public class WindowsServiceMiddleware
+    public class WindowsServiceMiddleware : IBackgroundServiceMiddleware
     {
         private readonly PowerShellExecutor powerShell;
 
@@ -11,25 +12,25 @@ namespace CommonUtils.Services
             powerShell = new PowerShellExecutor();
         }
 
-        public CommandLineResponse CreateWindowsService(string serviceName, string pathToExeFile)
+        public CommandLineResponse CreateService(string serviceName, string pathToExeFile)
         {
             string command = $"sc.exe create \"{serviceName}\" binpath={pathToExeFile}";
             return powerShell.Invoke(command);
         }
 
-        public CommandLineResponse StartWindowsService(string serviceName)
+        public CommandLineResponse StartService(string serviceName)
         {
             string command = $"Start-Service {serviceName}";
             return powerShell.Invoke(command);
         }
 
-        public CommandLineResponse StopWindowsService(string serviceName)
+        public CommandLineResponse StopService(string serviceName)
         {
             string command = $"Stop-Service {serviceName}";
             return powerShell.Invoke(command);
         }
 
-        public CommandLineResponse DeleteWindowsSerice(string serviceName)
+        public CommandLineResponse DeleteSerice(string serviceName)
         {
             var command = $"sc.exe delete \"{serviceName}\"";
             return powerShell.Invoke(command);
