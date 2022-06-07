@@ -15,7 +15,7 @@ namespace LinkLookupBackgroundService
 {
     public class LinkLookupService : BackgroundService
     {
-        private readonly IMessageSenderStrategy _messageSenderStrategy;
+        private readonly IEnumerable<IMessageSender> _messageSenders;
         private readonly UrlService _urlService;
         private readonly ILogger _logger;
         private List<Url> _downloadedLinks;
@@ -29,14 +29,14 @@ namespace LinkLookupBackgroundService
         public LinkLookupService(
             UrlService urlService,
             ILogger logger,
-            IMessageSenderStrategyFactory messageSenderStrategyFactory,
-            ILinkLookupConfigReader configReader
+            IEnumerable<IMessageSender> messageSenders,
+            ILinkLookupConfigReader notifyConfigReader
         )
         {
             _urlService = urlService;
             _logger = logger;
-            _notifyConfig = configReader.GetGroupsConfiguration();
-            _messageSenderStrategy = messageSenderStrategyFactory.CreateStrategy(_notifyConfig);
+            _messageSenders = messageSenders;
+            _notifyConfig = notifyConfigReader.GetGroupsConfiguration();
         }
 
         public override Task StartAsync(CancellationToken cancellationToken)
@@ -45,7 +45,10 @@ namespace LinkLookupBackgroundService
             InitialLinksDownloadAsync();
             try
             {
-                _messageSenderStrategy.SendMessageForAll("Service started...");
+                foreach (var messageSender in _messageSenders)
+                {
+                    messageSender.SendMessage("Service started...");
+                }
             }
             catch (Exception e)
             {
@@ -74,7 +77,14 @@ namespace LinkLookupBackgroundService
 
                             var uniqueLinksToSend = filteredLinks.Distinct().ToList();
 
-                            uniqueLinksToSend.ForEach(link => _messageSenderStrategy.SendMessageForAll(link.ToString()));
+                            uniqueLinksToSend.ForEach(link =>
+                            {
+                                foreach (var messageSender in _messageSenders)
+                                {
+                                    messageSender.SendMessage(link.ToString());
+                                }
+                            }
+                            );
                         }
                     }
                     catch (Exception e)
@@ -91,7 +101,10 @@ namespace LinkLookupBackgroundService
         {
             try
             {
-                _messageSenderStrategy.SendMessageForAll("Service stoped...");
+                foreach (var messageSender in _messageSenders)
+                {
+                    messageSender.SendMessage("Service stoped...");
+                }
             }
             catch (Exception e)
             {
@@ -103,7 +116,8 @@ namespace LinkLookupBackgroundService
 
         private Task InitialLinksDownloadAsync()
         {
-            return Task.Run(() => {
+            return Task.Run(() =>
+            {
                 try
                 {
                     _notifyConfig.CastedLinks.ForEach(link => _downloadedLinks.AddRange(_urlService.DownloadLinksAsync(link).Result));

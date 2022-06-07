@@ -1,7 +1,8 @@
-﻿{
+{
   "profiles": {
     "LinkLookupBackgroundService": {
       "commandName": "Project",
+      "commandLineArgs": "aleksandrs",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Local"
       }

@@ -2,9 +2,8 @@ using CommonUtils.Interfaces;
 using CommonUtils.Logging;
 using CommonUtils.Services;
 using LinkLookupBackgroundService.ConfigurationReaders;
+using LinkLookupBackgroundService.Extensions;
 using LinkLookupBackgroundService.Interfaces;
-using MessageSender;
-using MessageSender.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -27,16 +26,17 @@ namespace LinkLookupBackgroundService
                 {
                     services.AddTransient<UrlService>();
                     services.AddTransient<ILinkLookup, HtmlAntlrLinkLookup>();
-                    services.AddTransient<IMessageSenderStrategyFactory, MessageSenderStrategyFactory>();
-                    services.AddTransient<ILogger>(x => 
-                        new TextFileLogger($"{hostContext.Configuration.GetValue<string>("Workspace")}/Logs"));
+                    services.AddTransient<ILinkLookupConfigReader>(x => new JsonLinkLookupConfigReader(hostContext.Configuration, args[0]));
 
                     if (args.Length < 1)
                     {
                         throw new InvalidOperationException("Group name command line argument is mandatory");
                     }
-                    services.AddTransient<ILinkLookupConfigReader>(x =>
-                        new MongoDbLinkLookupConfigReader(args[0]));
+
+                    services.AddMessageSenders(new JsonLinkLookupConfigReader(hostContext.Configuration, args[0]));
+
+                    services.AddTransient<ILogger>(x => 
+                        new TextFileLogger($"{hostContext.Configuration.GetValue<string>("Workspace")}/Logs"));
 
                     services.AddHostedService<LinkLookupService>();
                 });
