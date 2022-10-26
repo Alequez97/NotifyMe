@@ -20,6 +20,7 @@ namespace LinkLookupBackgroundService
         {
             return Host.CreateDefaultBuilder(args)
                 .UseWindowsService()
+                .UseSystemd()
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddTransient<UrlService>();
