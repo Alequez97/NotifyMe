@@ -1,6 +1,6 @@
 ﻿using CommonUtils.Models;
 
-namespace CommonUtils.Services.Interfaces
+namespace CommonUtils.Interfaces
 {
     public interface IBackgroundServiceMiddleware
     {
@@ -10,8 +10,10 @@ namespace CommonUtils.Services.Interfaces
 
         public CommandLineResponse StopService(string serviceName);
 
-        public CommandLineResponse DeleteSerice(string serviceName);
+        public CommandLineResponse DeleteService(string serviceName);
 
         public bool CheckThatServiceExists(string serviceName);
+
+        public ServiceStatus GetServiceStatus(string serviceName);
     }
 }

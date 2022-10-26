@@ -52,7 +52,10 @@ namespace LinkLookupBackgroundService
             }
             catch (Exception e)
             {
-                //TODO Add exception logging
+                foreach (var messageSender in _messageSenders)
+                {
+                    messageSender.SendMessage($"Exception in StartAsync(): {e.Message}");
+                }
             }
 
             return base.StartAsync(cancellationToken);
@@ -89,12 +92,15 @@ namespace LinkLookupBackgroundService
                     }
                     catch (Exception e)
                     {
-                        _logger.LogError(e);
+                        foreach (var messageSender in _messageSenders)
+                        {
+                            messageSender.SendMessage($"Exception in ExecuteAsync(): {e.Message}");
+                        }
                     }
                 }
             }
 
-            await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+            await Task.Delay(TimeSpan.FromMinutes(10), stoppingToken);
         }
 
         public override Task StopAsync(CancellationToken cancellationToken)
@@ -108,7 +114,10 @@ namespace LinkLookupBackgroundService
             }
             catch (Exception e)
             {
-                //TODO Add exception logging
+                foreach (var messageSender in _messageSenders)
+                {
+                    messageSender.SendMessage($"Exception in StopAsync(): {e.Message}");
+                }
             }
 
             return base.StopAsync(cancellationToken);
@@ -125,7 +134,10 @@ namespace LinkLookupBackgroundService
                 }
                 catch (Exception e)
                 {
-                    //TODO Add exception logging
+                    foreach (var messageSender in _messageSenders)
+                    {
+                        messageSender.SendMessage($"Exception in InitialLinksDownloadAsync(): {e.Message}");
+                    }
                 }
             });
         }
