@@ -15,23 +15,10 @@ namespace MessageSender
         public TelegramMessageSender(TelegramConfig telegramConfig)
         {
             _telegramConfig = telegramConfig;
-            InitializeTelegraBotClient();
-        }
-
-        public TelegramMessageSender(string configFilePath, IConfigReader configReader)
-        {
-            _telegramConfig = configReader.ReadConfigFile<TelegramConfig>(configFilePath);
-            InitializeTelegraBotClient();
-        }
-
-        public TelegramMessageSender(string botsToken, string userId)
-        {
-            _telegramConfig = new TelegramConfig()
+            if (_telegramBot == null)
             {
-                Token = botsToken,
-                ChatId = userId
-            };
-            InitializeTelegraBotClient();
+                _telegramBot = new TelegramBotClient(_telegramConfig.Token, httpClient: null, null);
+            }
         }
 
         public string Id { get; set; } = Guid.NewGuid().ToString();
@@ -44,14 +31,6 @@ namespace MessageSender
         public Task SendMessageAsync(string message)
         {
             return _telegramBot.SendTextMessageAsync(_telegramConfig.ChatId, message);
-        }
-
-        private void InitializeTelegraBotClient()
-        {
-            if (_telegramBot == null)
-            {
-                _telegramBot = new TelegramBotClient(_telegramConfig.Token);
-            }
         }
     }
 }
