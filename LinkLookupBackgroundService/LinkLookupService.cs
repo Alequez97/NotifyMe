@@ -92,10 +92,10 @@ namespace LinkLookupBackgroundService
                     }
                     catch (Exception e)
                     {
-                        foreach (var messageSender in _messageSenders)
-                        {
-                            messageSender.SendMessage($"Exception in ExecuteAsync(): {e.Message}");
-                        }
+                        //foreach (var messageSender in _messageSenders)
+                        //{
+                        //    messageSender.SendMessage($"Exception in ExecuteAsync(): {e.Message}");
+                        //}
                     }
                 }
             }

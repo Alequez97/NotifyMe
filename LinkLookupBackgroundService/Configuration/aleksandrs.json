@@ -8,7 +8,8 @@
     "https://zip.lv/lv/nekustamais-ipasums/dzivokli-ire/izire/riga/centrs/?filters=price-%3A800%3AEUR%3Brooms-4196%3Barea-%3A80&pg=1"
   ],
   "IgnoreList": [
-    "carousel"
+    "carousel",
+    "email-protection"
   ],
   "Providers": {
     "Telegram": {
