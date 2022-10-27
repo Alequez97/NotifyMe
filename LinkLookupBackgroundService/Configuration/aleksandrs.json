@@ -7,7 +7,7 @@
     "https://pp.lv/lv/nekustamais-ipasums/dzivokli?minPrice=1.00&maxPrice=800&action=5&region=811&orderColumn=publishDate&orderDirection=DESC&fV%5B121%5D%5Bmin%5D=3&page=1"
   ],
   "IgnoreList": [
-
+    "carousel"
   ],
   "Providers": {
     "Telegram": {
