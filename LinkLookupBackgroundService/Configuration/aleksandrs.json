@@ -4,7 +4,8 @@
     "https://www.city24.lv/real-estate-search/apartments-for-rent/riga-centrs/price=eur-na-700/rooms=3/id=25892-city",
     "https://www.cityreal.lv/nekustamais-ipasums/tips/dzivoklis/rajons/riga/?no_cache=1&tx_realestate_pi1%5Bop_currency%5D=32&tx_realestate_pi1%5Bsettlement%5D%5B0%5D=19&tx_realestate_pi1%5Bsettlement%5D%5B1%5D=182&tx_realestate_pi1%5Bsettlement%5D%5B2%5D=178&tx_realestate_pi1%5Brooms_from%5D=3&tx_realestate_pi1%5Brooms_to%5D=3&tx_realestate_pi1%5Bop_price_from%5D=500&tx_realestate_pi1%5Bop_price_to%5D=700&tx_realestate_pi1%5Border_by%5D=op_price&tx_realestate_pi1%5Border_dir%5D=desc",
     "https://www.kurmajas.lv/lv/meklet/izire/dzivoklis?page=0&coords=57.055295996748036%2C24.299972550943497%2C56.83056841750809%2C23.955963151529435&pricemin=500&pricemax=700&areamax=70&roomsmin=3&roomsmax=3&sort=1",
-    "https://pp.lv/lv/nekustamais-ipasums/dzivokli?minPrice=1.00&maxPrice=800&action=5&region=811&orderColumn=publishDate&orderDirection=DESC&fV%5B121%5D%5Bmin%5D=3&page=1"
+    "https://pp.lv/lv/nekustamais-ipasums/dzivokli?minPrice=1.00&maxPrice=800&action=5&region=811&orderColumn=publishDate&orderDirection=DESC&fV%5B121%5D%5Bmin%5D=3&page=1",
+    "https://zip.lv/lv/nekustamais-ipasums/dzivokli-ire/izire/riga/centrs/?filters=price-%3A800%3AEUR%3Brooms-4196%3Barea-%3A80&pg=1"
   ],
   "IgnoreList": [
     "carousel"
